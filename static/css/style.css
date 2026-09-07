@@ -118,32 +118,45 @@ h1, .brand {
 .meta-row dd {
     font-weight: 600;
 }
+
+/* tautan media sosial*/
 .social-links {
     display: flex;
-    gap: 0.5rem;
     flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
 .social-link {
-    display: inline-block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
     color: var(--paper);
     background-color: var(--ink);
-    border-radius: var(--radius);
-    padding: 0.5rem 1.1rem;
-    transition: background-color 0.2s ease;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 1.25rem;
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
-
+/* Memberikan efek interaktif saat ikon media sosial diarahkan kursor */
 .social-link:hover {
     background-color: var(--accent);
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
 }
 
 .hero-photo {
     grid-area: photo;
     align-self: center;
     position: relative;
+}
+
+.hero-photo {
+    grid-area: photo;
+    align-self: center;
+    position: relative;
+    border-radius: var(--radius);
 }
 
 .photo-block {
@@ -155,7 +168,10 @@ h1, .brand {
     background-color: var(--accent);
     border-radius: var(--radius);
     z-index: 0;
+
+    transition: transform 0.3s ease;
 }
+
 
 .avatar {
     position: relative;
@@ -166,7 +182,26 @@ h1, .brand {
     object-fit: cover;
     border-radius: var(--radius);
     border: 3px solid var(--ink);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+}   
+
+/* memberikan efek zoom dan bayangan saat foto diarahkan kursor */
+.hero-photo:hover .avatar {
+    transform: scale(1.02);
+    border-color: var(--accent);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
 }
+
+/* menggeser blok warna di belakang foto saat hover */
+.hero-photo:hover .photo-block {
+    transform: translate(4px, 4px);
+}
+
+
 
 .site-footer {
     padding: 1.5rem;
@@ -174,6 +209,121 @@ h1, .brand {
     font-size: 0.85rem;
     border-top: 1px solid var(--line);
 }
+
+.experience{
+    padding: 2rem 0;
+    
+}
+
+.experience h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    
+}
+
+.experience article{
+    border: 1px solid var(--line);
+    padding: 1.5rem ;
+    border-radius: 8px;
+    background-color: var(--ink);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+
+}
+.experience article:hover{
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    background-color: var(--accent);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.experience-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+.experience article h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    color:var(--line);
+    
+}
+
+/* menyembunyikan deskripsi experience sebelum card diarahkan kursor */
+.experience article p{
+    color: var(--line);
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    margin-top: 0;
+    transition: opacity 0.3s ease, max-height 0.3s ease, margin-top 0.3s ease;
+}
+
+/* menampilkan deskripsi experience saat card diarahkan kursor */
+.experience article:hover p{
+    opacity: 1;
+    max-height: 100px;
+    margin-top: 0.5rem;
+}
+
+.experience {
+    padding: 4rem 0;
+    border-top: 1px solid var(--line);
+}
+
+.skills {
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.skills h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.skill-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 1.5rem;
+    min-height: 140px;
+
+    background-color: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.skill-card i {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.skill-card p {
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* mmberikan efek interaktif pada card skill */
+.skill-card:hover {
+    transform: scale(1.03);
+    border-color: var(--accent);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
 
 @media (max-width: 600px) {
     .hero-grid {
@@ -191,4 +341,23 @@ h1, .brand {
     .social-links {
         justify-content: flex-start;
     }
+
+    /* experience diubah menjadi satu kolom saat mobile */
+    .experience-grid {
+    grid-template-columns: 1fr;
+    }
+
+
+    /* deskripsi experience selalu ditampilkan pada mobile karena tidak ada hover */
+    .experience article p {
+        opacity: 1;
+        max-height: none;
+        margin-top: 0.5rem;
+    }
+
+    /* skills diubah menjadi dua kolom pada layar kecil */
+    .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
 }
