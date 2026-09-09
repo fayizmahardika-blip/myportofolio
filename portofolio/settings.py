@@ -94,7 +94,7 @@ if PRODUCTION:
             }
         }
     }
-else:
+else:   
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
