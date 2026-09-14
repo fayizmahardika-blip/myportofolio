@@ -1,5 +1,5 @@
 /* ========================================
-   RESET & COLOR SYSTEM
+   COLOR SYSTEM
    ======================================== */
 
 * {
@@ -570,24 +570,24 @@ h1,
 }
 
 .about-button.primary {
-    color: var(--navy-dark);
+    color: var(--ivory);
 
-    background:
-        linear-gradient(
-            135deg,
-            var(--gold-light),
-            var(--gold)
-        );
+    background-color: rgba(255, 255, 255, 0.04);
 
-    border: 1px solid var(--gold);
+    border: 1px solid var(--dark-line);
 }
 
 .about-button.primary:hover {
     transform: translateY(-3px);
 
+    color: var(--gold-light);
+
+    background-color: rgba(201, 166, 107, 0.08);
+
+    border-color: var(--gold);
+
     box-shadow:
-        0 8px 22px rgba(0, 0, 0, 0.18),
-        0 0 20px rgba(201, 166, 107, 0.28);
+        0 0 18px rgba(201, 166, 107, 0.15);
 }
 
 .about-button.secondary {
