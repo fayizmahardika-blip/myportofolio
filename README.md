@@ -23,3 +23,32 @@ jawaban: karena website saat ini masih bersifat static, seluruh informasi masih 
 Saya menggunakan ChatGPT untuk membantu memahami penggunaan HTML5 dan CSS3, terutama pada bagian CSS Grid, responsive design, hover effect, transition, serta penggunaan icon media sosial.
 
 Saya menggunakan AI sebagai alat bantu untuk memahami fungsi property CSS yang belum saya ketahui. setelah mendapatkan saran, saya mencoba implementasinya langsung di browser dan melakukan penyesuaian manual pada layout, ukuran, warna, dan animasi agar sesuai dengan desain yang saya inginkan.
+
+
+### Tugas 2
+
+1. Ketika pengguna membuka halaman Education, request pertama kali diterima oleh `urls.py` pada project Django. `urls.py` project meneruskan request ke `urls.py` aplikasi `main`. Route `education/` kemudian menjalankan view `show_education`. View mengambil seluruh data dari model `Education` menggunakan `Education.objects.all()`, memasukkannya ke dalam context sebagai `education_list`, lalu meneruskannya ke template `education.html`. Template melakukan perulangan terhadap data tersebut dan menampilkannya pada browser.
+
+2. Data Education sebaiknya disimpan pada model karena data menjadi terpusat dan dapat dikelola tanpa harus mengubah HTML setiap kali ada penambahan atau perubahan. Jika data ditulis langsung di template, setiap perubahan harus dilakukan secara manual pada HTML. Dengan model, data dapat ditambah, diubah, atau dihapus melalui database sehingga aplikasi lebih mudah dipelihara dan dikembangkan.
+
+3. `makemigrations` digunakan untuk membuat file migration berdasarkan perubahan pada model, sedangkan `migrate` digunakan untuk menerapkan migration tersebut ke database. Contohnya, ketika saya menambahkan model `Education` beserta field seperti `institution`, `level`, `start_year`, dan field lainnya, saya menjalankan `python manage.py makemigrations` untuk membuat migration lalu `python manage.py migrate` untuk membuat struktur tabel tersebut pada database.
+
+
+## AI Disclosure
+
+Dalam pengerjaan Tugas 2, saya menggunakan ChatGPT sebagai alat bantu untuk memahami konsep Django dan membantu proses debugging selama pengembangan.
+
+AI digunakan terutama untuk:
+Memahami alur Model-View-Template (MVT) pada Django.
+Membantu memahami hubungan antara `models.py`, `views.py`, `urls.py`, dan template HTML.
+Membantu menyusun dan mengevaluasi model `Education`.
+Memberikan contoh struktur template `education.html` dan penggunaan Django Template Language.
+Membantu memahami dan membuat unit test untuk halaman Education.
+Membantu debugging error pada deployment PWS, terutama terkait konfigurasi database dan environment variables.
+Membantu menjelaskan penggunaan migration, Django shell, routing, dan penggunaan field pada model.
+Membantu merapikan dokumentasi dan jawaban pertanyaan reflektif pada README.
+
+Strategi prompting yang saya gunakan adalah memberikan konteks project, potongan kode, error message, serta instruksi tugas secara bertahap. Saya kemudian meminta penjelasan mengenai penyebab error, konsep yang digunakan, dan langkah penyelesaian agar tetap memahami proses implementasinya.
+
+Seluruh kode yang digunakan tetap saya review, sesuaikan, dan jalankan sendiri pada project untuk memastikan implementasinya sesuai dengan kebutuhan tugas dan dapat berjalan dengan benar.
+

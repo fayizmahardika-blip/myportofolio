@@ -21,6 +21,9 @@
                     <a href="{% url 'main:show_experience' %}">
                         Experience
                     </a>
+                    <a href="{% url 'main:show_education' %}">
+                        Education
+                    </a>
                 </nav>
             </div>
         </header>
@@ -73,34 +76,44 @@
                 </div>
             </section>
             
-            <!--saya menambahkan skills section--> 
-            <section class="skills">
+            <!--saya menambahkan abaout me  section--> 
+            <section class="about-section">
         <div class="container">
-            <h2>Skills</h2>
-            <div class="skills-grid">
-                <article class="skill-card"> 
-                    <!-- cion Python diambil dari library Font Awesome.
-                        Class "fa-brands" menandakan kategori brand,
-                        sedangkan "fa-python" menentukan icon Python yang ditampilkan. -->
-                    <i class="fa-brands fa-python"></i>
-                    <p>Python</p>
-                </article>
 
-                <article class="skill-card">
-                    <i class="fa-brands fa-java"></i>
-                    <p>Java</p>
-                </article>
+            <p class="section-kicker">About Me</p>
 
-                <article class="skill-card">
-                    <i class="fa-brands fa-figma"></i>
-                    <p>Figma</p>
-                </article>
+            <div class="about-content">
+                <p class="about-text">
+                    I'm a Computer Science student at Universitas Indonesia,
+                    interested in software development, design, and creative
+                    technology. I enjoy building digital experiences that are
+                    functional, thoughtful, and visually engaging.
+                </p>
 
-                <article class="skill-card">
-                    <i class="fa-solid fa-video"></i>
-                    <p>Alight Motion</p>
-                </article>
+                <div class="about-quote">
+                    <span class="quote-mark">“</span>
+                    <p>Still learning, still building.</p>
+                </div>
+
+                <div class="about-actions">
+                    <a
+                        href="{% url 'main:show_experience' %}"
+                        class="about-button primary"
+                    >
+                        <i class="fa-solid fa-briefcase"></i>
+                        View Experience
+                    </a>
+
+                    <a
+                        href="{% url 'main:show_education' %}"
+                        class="about-button secondary"
+                    >
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        View Education
+                    </a>
+                </div>
             </div>
+
         </div>
     </section>
             

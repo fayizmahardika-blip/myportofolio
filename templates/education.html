@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Education - {{ name }}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    >
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="container">
+
+            <a href="{% url 'main:show_main' %}" class="brand">
+                {{ name }}
+            </a>
+
+            <nav>
+                <a href="{% url 'main:show_main' %}">
+                    Profile
+                </a>
+
+                <a href="{% url 'main:show_experience' %}">
+                    Experience
+                </a>
+
+                <a href="{% url 'main:show_education' %}">
+                    Education
+                </a>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <main>
+
+        <section class="education-section">
+
+            <div class="container">
+
+                <p class="section-kicker">
+                    Academic Journey
+                </p>
+
+                <h1>Education</h1>
+
+                <p class="education-intro">
+                    My academic background, activities, and achievements
+                    throughout my educational journey.
+                </p>
+
+
+                <div class="education-list">
+
+                    {% for education in education_list %}
+
+                    <article class="education-card">
+
+
+                        <!-- School logo / image -->
+                        <div class="education-image">
+
+                            {% if education.school_image %}
+
+                                <img
+                                    src="{{ education.school_image }}"
+                                    alt="{{ education.institution }}"
+                                >
+
+                            {% else %}
+
+                                <div class="education-image-placeholder">
+                                    <i class="fa-solid fa-building-columns"></i>
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- Education information -->
+                        <div class="education-content">
+
+                            <div class="education-heading">
+
+                                <div>
+
+                                    <span class="education-level">
+                                        {{ education.get_level_display }}
+                                    </span>
+
+
+                                    {% if education.school_url %}
+
+                                        <h2>
+                                            <a
+                                                href="{{ education.school_url }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                {{ education.institution }}
+                                            </a>
+                                        </h2>
+
+                                    {% else %}
+
+                                        <h2>
+                                            {{ education.institution }}
+                                        </h2>
+
+                                    {% endif %}
+
+
+                                    {% if education.field_of_study %}
+
+                                        <p class="education-field">
+                                            {{ education.field_of_study }}
+                                        </p>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="education-year">
+
+                                    {{ education.start_year }}
+
+                                    &mdash;
+
+                                    {% if education.is_ongoing %}
+                                        Present
+                                    {% else %}
+                                        {{ education.end_year }}
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            {% if education.grade %}
+
+                                <div class="education-detail">
+
+                                    <h3>
+                                        <i class="fa-solid fa-chart-line"></i>
+                                        Grade
+                                    </h3>
+
+                                    <p>
+                                        {{ education.grade }}
+                                    </p>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if education.activities %}
+
+                                <div class="education-detail">
+
+                                    <h3>
+                                        <i class="fa-solid fa-people-group"></i>
+                                        Activities & Societies
+                                    </h3>
+
+                                    <p>
+                                        {{ education.activities|linebreaksbr }}
+                                    </p>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if education.achievements %}
+
+                                <div class="education-detail">
+
+                                    <h3>
+                                        <i class="fa-solid fa-trophy"></i>
+                                        Achievements
+                                    </h3>
+
+                                    <p>
+                                        {{ education.achievements|linebreaksbr }}
+                                    </p>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if education.description %}
+
+                                <div class="education-detail">
+
+                                    <h3>
+                                        <i class="fa-solid fa-align-left"></i>
+                                        About
+                                    </h3>
+
+                                    <p>
+                                        {{ education.description }}
+                                    </p>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </article>
+
+
+                    {% empty %}
+
+                        <div class="education-empty">
+
+                            <i class="fa-solid fa-graduation-cap"></i>
+
+                            <h2>No education added yet</h2>
+
+                            <p>
+                                Education history will appear here.
+                            </p>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="site-footer">
+
+        <div class="container">
+
+            <p>
+                &copy; 2026 {{ name }}.
+                Fakultas Ilmu Komputer, Universitas Indonesia.
+            </p>
+
+        </div>
+
+    </footer>
+
+</body>
+</html>

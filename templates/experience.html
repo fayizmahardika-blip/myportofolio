@@ -17,6 +17,9 @@
             <nav>
                 <a href="{% url 'main:show_main' %}">Profile</a>
                 <a href="{% url 'main:show_experience' %}">Experience</a>
+                <a href="{% url 'main:show_education' %}">
+                    Education
+                </a>
             </nav>
         </div>
     </header>
@@ -31,6 +34,16 @@
                     {% for experience in experience_list %}
 
                     <article class="experience-card">
+
+                        {% if experience.thumbnail %}
+                            <div class="experience-logo">
+                                <img
+                                    src="{{ experience.thumbnail }}"
+                                    alt="{{ experience.title }}"
+                                >
+                            </div>
+                        {% endif %}
+
                         <span class="experience-category">
                             {{ experience.get_category_display }}
                         </span>
