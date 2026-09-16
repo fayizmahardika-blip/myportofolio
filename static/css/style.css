@@ -989,6 +989,226 @@ h1,
 
     border-top: 1px solid var(--dark-line);
 }
+.education-form {
+    width: 100%;
+    max-width: 760px;
+    margin-top: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.4rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--gold-light);
+    font-weight: 700;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.8rem 0.9rem;
+
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--ivory);
+
+    border: 1px solid var(--dark-line);
+    border-radius: 10px;
+
+    font: inherit;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: 2px solid var(--gold);
+    border-color: var(--gold);
+}
+
+.form-group select option {
+    color: #111;
+}
+
+.form-error {
+    margin-top: 0.4rem;
+    color: #ff8c8c;
+    font-size: 0.9rem;
+}
+
+.form-help {
+    margin-top: 0.4rem;
+    opacity: 0.7;
+    font-size: 0.85rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 2rem;
+}
+
+.button {
+    display: inline-block;
+    padding: 0.7rem 1rem;
+
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+
+    background: var(--gold);
+    color: var(--navy);
+
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+.button-secondary {
+    background: transparent;
+    color: var(--ivory);
+    border-color: var(--dark-line);
+}
+
+.education-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.education-add-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.education-add-button span {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.education-search {
+    display: flex;
+    gap: 0.75rem;
+    margin: 1.5rem 0 2rem;
+}
+
+.education-search__input {
+    width: 100%;
+    min-width: 0;
+    padding: 0.75rem 0.9rem;
+
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--ivory);
+
+    border: 1px solid var(--dark-line);
+    border-radius: 10px;
+
+    font: inherit;
+}
+
+.education-search__input:focus {
+    outline: 2px solid var(--gold);
+    border-color: var(--gold);
+}
+
+.education-actions {
+    margin-top: 1.2rem;
+}
+
+.button-danger {
+    background: #b42318;
+    color: white;
+    border-color: #b42318;
+}
+
+.education-delete-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    max-width: none;
+    max-height: none;
+
+    margin: 0;
+    padding: 1rem;
+
+    border: 0;
+    background: transparent;
+
+    z-index: 20;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.education-delete-modal:popover-open {
+    display: flex;
+}
+
+.education-delete-modal__backdrop {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    border: 0;
+    padding: 0;
+
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.education-delete-modal__content {
+    position: relative;
+    z-index: 1;
+
+    width: min(100%, 480px);
+
+    padding: 1.5rem;
+
+    background: var(--navy-card);
+    color: var(--ivory);
+
+    border: 1px solid var(--dark-line);
+    border-radius: 12px;
+}
+
+.education-delete-modal__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+
+    border: 0;
+    background: transparent;
+
+    color: var(--ivory);
+
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+.education-delete-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+
+    margin-top: 1.5rem;
+}
+
 
 
 /* ========================================
@@ -1073,5 +1293,49 @@ h1,
 
     .education-year {
         white-space: normal;
+    }
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .button {
+        width: 100%;
+        text-align: center;
+    }
+    .education-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .education-add-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .education-search {
+        flex-direction: column;
+    }
+
+    .education-search .button {
+        width: 100%;
+    }
+
+    .education-delete-modal {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .education-delete-modal__content {
+        width: 100%;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .education-delete-modal__actions {
+        flex-direction: column-reverse;
+    }
+
+    .education-delete-modal__actions .button {
+        width: 100%;
+        text-align: center;
     }
 }

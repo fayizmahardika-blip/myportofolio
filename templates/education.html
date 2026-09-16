@@ -1,52 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>Education - {{ name }}</title>
+{% block meta %}
+<title>Education - {{ name }}</title>
+{% endblock meta %}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap"
-        rel="stylesheet"
-    >
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    >
-
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-
-<body>
-
-    <header class="site-header">
-        <div class="container">
-
-            <a href="{% url 'main:show_main' %}" class="brand">
-                {{ name }}
-            </a>
-
-            <nav>
-                <a href="{% url 'main:show_main' %}">
-                    Profile
-                </a>
-
-                <a href="{% url 'main:show_experience' %}">
-                    Experience
-                </a>
-
-                <a href="{% url 'main:show_education' %}">
-                    Education
-                </a>
-            </nav>
-
-        </div>
-    </header>
+{% block content %}
 
 
     <main>
@@ -55,16 +13,47 @@
 
             <div class="container">
 
-                <p class="section-kicker">
-                    Academic Journey
-                </p>
+                <div class="education-header">
+                    <div>
+                        <p class="section-kicker">
+                            Academic Journey
+                        </p>
 
-                <h1>Education</h1>
+                        <h1>Education</h1>
+                    </div>
+
+                    <a
+                        href="{% url 'main:create_education' %}"
+                        class="button education-add-button"
+                    >
+                        <span aria-hidden="true">+</span>
+                        Add Education
+                    </a>
+                </div>
 
                 <p class="education-intro">
                     My academic background, activities, and achievements
                     throughout my educational journey.
                 </p>
+
+                <form
+                    method="get"
+                    action="{% url 'main:show_education' %}"
+                    class="education-search"
+                >
+                    <input
+                        type="search"
+                        name="institution"
+                        value="{{ institution_query }}"
+                        placeholder="Search by institution"
+                        class="education-search__input"
+                        aria-label="Search by institution"
+                    >
+
+                    <button type="submit" class="button">
+                        Search
+                    </button>
+                </form>
 
 
                 <div class="education-list">
@@ -97,6 +86,7 @@
 
                         <!-- Education information -->
                         <div class="education-content">
+
 
                             <div class="education-heading">
 
@@ -227,6 +217,10 @@
 
                             {% endif %}
 
+                        </div>  
+
+                        <div class="education-actions">
+                            {% include "components/education_delete_modal.html" with education=education %}
                         </div>
 
                     </article>
@@ -234,9 +228,19 @@
 
                     {% empty %}
 
-                        <div class="education-empty">
+                    <div class="education-empty">
 
-                            <i class="fa-solid fa-graduation-cap"></i>
+                        <i class="fa-solid fa-graduation-cap"></i>
+
+                        {% if institution_query %}
+
+                            <h2>No education found</h2>
+
+                            <p>
+                                No institution matches "{{ institution_query }}".
+                            </p>
+
+                        {% else %}
 
                             <h2>No education added yet</h2>
 
@@ -244,31 +248,15 @@
                                 Education history will appear here.
                             </p>
 
-                        </div>
+                        {% endif %}
 
-                    {% endfor %}
+                    </div>
 
-                </div>
-
-            </div>
+                {% endfor %}
 
         </section>
 
     </main>
 
 
-    <footer class="site-footer">
-
-        <div class="container">
-
-            <p>
-                &copy; 2026 {{ name }}.
-                Fakultas Ilmu Komputer, Universitas Indonesia.
-            </p>
-
-        </div>
-
-    </footer>
-
-</body>
-</html>
+    {% endblock content %}
