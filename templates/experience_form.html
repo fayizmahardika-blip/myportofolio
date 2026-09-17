@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block meta %}
+<title>Add Experience - {{ name }}</title>
+{% endblock meta %}
+
+{% block content %}
+
+<main>
+    <section class="experience-section">
+        <div class="container">
+
+            {% if experience %}
+                <p class="section-kicker">
+                    Update Experience
+                </p>
+
+                <h1>
+                    Edit Experience
+                </h1>
+            {% else %}
+                <p class="section-kicker">
+                    Add New Experience
+                </p>
+
+                <h1>
+                    Add Experience
+                </h1>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <button type="submit" class="button">
+                    {% if experience %}
+                        Update Experience
+                    {% else %}
+                        Save Experience
+                    {% endif %}
+                </button>
+
+                <a
+                    href="{% url 'main:show_experience' %}"
+                    class="button"
+                >
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+    </section>
+</main>
+
+{% endblock content %}

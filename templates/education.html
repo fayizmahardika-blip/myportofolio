@@ -1,69 +1,93 @@
 {% extends "base.html" %}
 
 {% block meta %}
-<title>Education - {{ name }}</title>
+<title>Education -   {{ name }}</title>
 {% endblock meta %}
+
 
 {% block content %}
 
+<main>
 
-    <main>
+    <section class="education-section"> 
 
-        <section class="education-section">
+        <div class="container">
 
-            <div class="container">
+            <!-- =========================
+                 PAGE HEADER
+                 ========================= -->
 
-                <div class="education-header">
-                    <div>
-                        <p class="section-kicker">
-                            Academic Journey
-                        </p>
+            <div class="education-header">
 
-                        <h1>Education</h1>
-                    </div>
+                <div>
+                    <p class="section-kicker">
+                        Academic Journey
+                    </p>
 
-                    <a
-                        href="{% url 'main:create_education' %}"
-                        class="button education-add-button"
-                    >
-                        <span aria-hidden="true">+</span>
-                        Add Education
-                    </a>
+                    <h1>Education</h1>
                 </div>
 
-                <p class="education-intro">
-                    My academic background, activities, and achievements
-                    throughout my educational journey.
-                </p>
-
-                <form
-                    method="get"
-                    action="{% url 'main:show_education' %}"
-                    class="education-search"
+                <a
+                    href="{% url 'main:create_education' %}"
+                    class="button education-add-button"
                 >
-                    <input
-                        type="search"
-                        name="institution"
-                        value="{{ institution_query }}"
-                        placeholder="Search by institution"
-                        class="education-search__input"
-                        aria-label="Search by institution"
-                    >
+                    <span aria-hidden="true">+</span>
+                    Add Education
+                </a>
 
-                    <button type="submit" class="button">
-                        Search
-                    </button>
-                </form>
+            </div>
 
 
-                <div class="education-list">
+            <p class="education-intro">
+                My academic background, activities, and achievements
+                throughout my educational journey.
+            </p>
 
-                    {% for education in education_list %}
+
+            <!-- =========================
+                 SEARCH
+                 ========================= -->
+
+            <form
+                method="get"
+                action="{% url 'main:show_education' %}"
+                class="education-search"
+            >
+
+                <input
+                    type="search"
+                    name="institution"
+                    value="{{ institution_query }}"
+                    placeholder="Search by institution"
+                    class="education-search__input"
+                    aria-label="Search by institution"
+                >
+
+                <button
+                    type="submit"
+                    class="button"
+                >
+                    Search
+                </button>
+
+            </form>
+
+
+            <!-- =========================
+                 EDUCATION LIST
+                 ========================= -->
+
+            <div class="education-list">
+
+                {% for education in education_list %}
 
                     <article class="education-card">
 
 
-                        <!-- School logo / image -->
+                        <!-- =========================
+                             SCHOOL LOGO
+                             ========================= -->
+
                         <div class="education-image">
 
                             {% if education.school_image %}
@@ -76,7 +100,7 @@
                             {% else %}
 
                                 <div class="education-image-placeholder">
-                                    <i class="fa-solid fa-building-columns"></i>
+                                    {{ education.institution|slice:":1" }}
                                 </div>
 
                             {% endif %}
@@ -84,13 +108,20 @@
                         </div>
 
 
-                        <!-- Education information -->
+                        <!-- =========================
+                             EDUCATION CONTENT
+                             ========================= -->
+
                         <div class="education-content">
 
 
+                            <!-- =========================
+                                 MAIN INFORMATION
+                                 ========================= -->
+
                             <div class="education-heading">
 
-                                <div>
+                                <div class="education-heading-main">
 
                                     <span class="education-level">
                                         {{ education.get_level_display }}
@@ -146,95 +177,121 @@
                             </div>
 
 
-                            {% if education.grade %}
+                            <!-- =========================
+                                 DETAIL BOX
+                                 ========================= -->
 
-                                <div class="education-detail">
-
-                                    <h3>
-                                        <i class="fa-solid fa-chart-line"></i>
-                                        Grade
-                                    </h3>
-
-                                    <p>
-                                        {{ education.grade }}
-                                    </p>
-
-                                </div>
-
-                            {% endif %}
+                            <div class="education-detail-box">
 
 
-                            {% if education.activities %}
+                                <!-- GPA -->
 
-                                <div class="education-detail">
+                                {% if education.grade %}
 
-                                    <h3>
-                                        <i class="fa-solid fa-people-group"></i>
-                                        Activities & Societies
-                                    </h3>
+                                    <div class="education-detail-block">
 
-                                    <p>
-                                        {{ education.activities|linebreaksbr }}
-                                    </p>
+                                        <h3>
+                                            GPA
+                                        </h3>
 
-                                </div>
+                                        <p>
+                                            {{ education.grade }}
+                                        </p>
 
-                            {% endif %}
+                                    </div>
 
-
-                            {% if education.achievements %}
-
-                                <div class="education-detail">
-
-                                    <h3>
-                                        <i class="fa-solid fa-trophy"></i>
-                                        Achievements
-                                    </h3>
-
-                                    <p>
-                                        {{ education.achievements|linebreaksbr }}
-                                    </p>
-
-                                </div>
-
-                            {% endif %}
+                                {% endif %}
 
 
-                            {% if education.description %}
+                                <!-- ACTIVITIES -->
 
-                                <div class="education-detail">
+                                {% if education.activities %}
 
-                                    <h3>
-                                        <i class="fa-solid fa-align-left"></i>
-                                        About
-                                    </h3>
+                                    <div class="education-detail-block">
 
-                                    <p>
-                                        {{ education.description }}
-                                    </p>
+                                        <h3>
+                                            Activities &amp; Societies
+                                        </h3>
 
-                                </div>
+                                        <p>
+                                            {{ education.activities|linebreaksbr }}
+                                        </p>
 
-                            {% endif %}
+                                    </div>
 
-                        </div>  
+                                {% endif %}
 
-                        <div class="education-actions">
-                            {% include "components/education_delete_modal.html" with education=education %}
+
+                                <!-- ACHIEVEMENTS -->
+
+                                {% if education.achievements %}
+
+                                    <div class="education-detail-block">
+
+                                        <h3>
+                                            Achievements
+                                        </h3>
+
+                                        <p>
+                                            {{ education.achievements|linebreaksbr }}
+                                        </p>
+
+                                    </div>
+
+                                {% endif %}
+
+
+                                <!-- ABOUT -->
+
+                                {% if education.description %}
+
+                                    <div class="education-detail-block">
+
+                                        <h3>
+                                            About
+                                        </h3>
+
+                                        <p>
+                                            {{ education.description }}
+                                        </p>
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- =========================
+                                 ACTIONS
+                                 ========================= -->
+
+                            <div class="education-actions">
+
+                                {% include "components/education_delete_modal.html" with education=education %}
+
+                            </div>
+
+
                         </div>
 
                     </article>
 
 
-                    {% empty %}
+                {% empty %}
+
+
+                    <!-- =========================
+                         EMPTY STATE
+                         ========================= -->
 
                     <div class="education-empty">
 
-                        <i class="fa-solid fa-graduation-cap"></i>
-
                         {% if institution_query %}
 
-                            <h2>No education found</h2>
+                            <h2>
+                                No education found
+                            </h2>
 
                             <p>
                                 No institution matches "{{ institution_query }}".
@@ -242,7 +299,9 @@
 
                         {% else %}
 
-                            <h2>No education added yet</h2>
+                            <h2>
+                                No education added yet
+                            </h2>
 
                             <p>
                                 Education history will appear here.
@@ -252,11 +311,15 @@
 
                     </div>
 
+
                 {% endfor %}
 
-        </section>
+            </div>
 
-    </main>
+        </div>
 
+    </section>
 
-    {% endblock content %}
+</main>
+
+{% endblock content %}

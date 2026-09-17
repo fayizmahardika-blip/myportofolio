@@ -10,7 +10,35 @@
         <section class="experience-section" id="experience">
             <div class="container">
                 <p class="section-kicker">Perjalanan saya sejauh ini</p>
-                <h1>Experience</h1>
+                <div class="experience-header">
+                    <h1>Experience</h1>
+
+                    <a
+                        href="{% url 'main:create_experience' %}"
+                        class="button"
+                    >
+                        + Add Experience
+                    </a>
+                </div>
+
+                <form
+                    method="get"
+                    action="{% url 'main:show_experience' %}"
+                    class="experience-search"
+                >
+                    <input
+                        type="search"
+                        name="title"
+                        value="{{ title_query }}"
+                        placeholder="Search by title"
+                        class="experience-search__input"
+                        aria-label="Search by title"
+                    >
+
+                    <button type="submit" class="button">
+                        Search
+                    </button>
+                </form>
 
                 <div class="experience-grid">
                     {% for experience in experience_list %}
@@ -26,27 +54,66 @@
                             </div>
                         {% endif %}
 
-                        <span class="experience-category">
-                            {{ experience.get_category_display }}
-                        </span>
+                        <a
+                            href="{% url 'main:edit_experience' experience.id %}"
+                            class="button"
+                        >
+                            Edit
+                        </a>
 
-                        <h2>{{ experience.title }}</h2>
+                        <form
+                            method="post"
+                            action="{% url 'main:delete_experience' experience.id %}"
+                            style="display: inline;"
+                        >
+                            {% csrf_token %}
 
-                        <p class="experience-description">
-                            {{ experience.description }}
-                        </p>
+                            <button
+                                type="submit"
+                                class="button button-danger"
+                            >
+                                Delete
+                            </button>
+                        </form>
 
-                        {% if experience.is_ongoing %}
-                            <p class="experience-status">Sedang berlangsung</p>
-                        {% else %}
-                            <p class="experience-status">Selesai</p>
-                        {% endif %}
+                        <div class="experience-content">
+
+                            <span class="experience-category">
+                                {{ experience.get_category_display }}
+                            </span>
+
+                            <h2>{{ experience.title }}</h2>
+
+                            <p class="experience-description">
+                                {{ experience.description }}
+                            </p>
+
+                            {% if experience.is_ongoing %}
+                                <p class="experience-status">
+                                    Sedang berlangsung
+                                </p>
+                            {% else %}
+                                <p class="experience-status">
+                                    Selesai
+                                </p>
+                            {% endif %}
+
+                        </div>
+
                     </article>
 
                     {% empty %}
-                        <p class="empty-state">
-                            Belum ada pengalaman yang ditambahkan.
-                        </p>
+
+                        {% if title_query %}
+                            <p class="empty-state">
+                                No experience found for "{{ title_query }}".
+                            </p>
+                        {% else %}
+                            <p class="empty-state">
+                                Belum ada pengalaman yang ditambahkan.
+                            </p>
+                        {% endif %}
+
                     {% endfor %}
                 </div>
             </div>

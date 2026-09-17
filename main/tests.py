@@ -69,6 +69,85 @@ class MainTest(TestCase):
         self.assertContains(response, "Selesai")
         self.assertNotContains(response, "Sedang berlangsung")
 
+    def test_create_experience(self):
+        response = self.client.post(
+            reverse("main:create_experience"),
+            {
+                "title": "Staff Media BEM",
+                "description": "Mengelola publikasi dan dokumentasi.",
+                "category": "volunteer",
+                "thumbnail": "",
+                "ended_at": "",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+        self.assertTrue(
+            Experience.objects.filter(
+                title="Staff Media BEM"
+            ).exists()
+        )
+
+
+    def test_edit_experience(self):
+        response = self.client.post(
+            reverse(
+                "main:edit_experience",
+                args=[self.experience.id],
+            ),
+            {
+                "title": "Updated Experience",
+                "description": "Updated description",
+                "category": "volunteer",
+                "thumbnail": "",
+                "ended_at": "",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+        self.experience.refresh_from_db()
+
+        self.assertEqual(
+            self.experience.title,
+            "Updated Experience",
+        )
+
+
+    def test_delete_experience(self):
+        response = self.client.post(
+            reverse(
+                "main:delete_experience",
+                args=[self.experience.id],
+            )
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+        self.assertFalse(
+            Experience.objects.filter(
+                id=self.experience.id
+            ).exists()
+        )
+
+
+    def test_experience_json(self):
+        response = self.client.get(
+            reverse("main:get_experience_json")
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response["Content-Type"],
+            "application/json",
+        )
+
+        self.assertContains(
+            response,
+            self.experience.title,
+        )
+
 
 class EducationTest(TestCase):
     def setUp(self):
