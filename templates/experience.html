@@ -6,42 +6,54 @@
 
 {% block content %}
 
-    <main>
-        <section class="experience-section" id="experience">
-            <div class="container">
-                <p class="section-kicker">Perjalanan saya sejauh ini</p>
-                <div class="experience-header">
-                    <h1>Experience</h1>
+<main>
+    <section class="experience-section" id="experience">
+        <div class="container">
 
+            <p class="section-kicker">
+                Perjalanan saya sejauh ini
+            </p>
+
+            <div class="experience-header">
+                <h1>Experience</h1>
+
+                {% if user.is_superuser %}
                     <a
                         href="{% url 'main:create_experience' %}"
                         class="button"
                     >
                         + Add Experience
                     </a>
-                </div>
+                {% endif %}
+            </div>
 
-                <form
-                    method="get"
-                    action="{% url 'main:show_experience' %}"
-                    class="experience-search"
+
+            <form
+                method="get"
+                action="{% url 'main:show_experience' %}"
+                class="experience-search"
+            >
+                <input
+                    type="search"
+                    name="title"
+                    value="{{ title_query }}"
+                    placeholder="Search by title"
+                    class="experience-search__input"
+                    aria-label="Search by title"
                 >
-                    <input
-                        type="search"
-                        name="title"
-                        value="{{ title_query }}"
-                        placeholder="Search by title"
-                        class="experience-search__input"
-                        aria-label="Search by title"
-                    >
 
-                    <button type="submit" class="button">
-                        Search
-                    </button>
-                </form>
+                <button
+                    type="submit"
+                    class="button"
+                >
+                    Search
+                </button>
+            </form>
 
-                <div class="experience-grid">
-                    {% for experience in experience_list %}
+
+            <div class="experience-grid">
+
+                {% for experience in experience_list %}
 
                     <article class="experience-card">
 
@@ -54,27 +66,6 @@
                             </div>
                         {% endif %}
 
-                        <a
-                            href="{% url 'main:edit_experience' experience.id %}"
-                            class="button"
-                        >
-                            Edit
-                        </a>
-
-                        <form
-                            method="post"
-                            action="{% url 'main:delete_experience' experience.id %}"
-                            style="display: inline;"
-                        >
-                            {% csrf_token %}
-
-                            <button
-                                type="submit"
-                                class="button button-danger"
-                            >
-                                Delete
-                            </button>
-                        </form>
 
                         <div class="experience-content">
 
@@ -82,11 +73,14 @@
                                 {{ experience.get_category_display }}
                             </span>
 
-                            <h2>{{ experience.title }}</h2>
+                            <h2>
+                                {{ experience.title }}
+                            </h2>
 
                             <p class="experience-description">
                                 {{ experience.description }}
                             </p>
+
 
                             {% if experience.is_ongoing %}
                                 <p class="experience-status">
@@ -98,26 +92,63 @@
                                 </p>
                             {% endif %}
 
+                            {% include "components/experience_star.html" with experience=experience %}
+
+
+
+                            {% if user.is_superuser %}
+
+                                <div class="experience-actions">
+
+                                    <a
+                                        href="{% url 'main:edit_experience' experience.id %}"
+                                        class="button"
+                                    >
+                                        Edit
+                                    </a>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'main:delete_experience' experience.id %}"
+                                        style="display: inline;"
+                                    >
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="button button-danger"
+                                        >
+                                            Delete
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                            {% endif %}
+
                         </div>
 
                     </article>
 
-                    {% empty %}
 
-                        {% if title_query %}
-                            <p class="empty-state">
-                                No experience found for "{{ title_query }}".
-                            </p>
-                        {% else %}
-                            <p class="empty-state">
-                                Belum ada pengalaman yang ditambahkan.
-                            </p>
-                        {% endif %}
+                {% empty %}
 
-                    {% endfor %}
-                </div>
+                    {% if title_query %}
+                        <p class="empty-state">
+                            No experience found for "{{ title_query }}".
+                        </p>
+                    {% else %}
+                        <p class="empty-state">
+                            Belum ada pengalaman yang ditambahkan.
+                        </p>
+                    {% endif %}
+
+                {% endfor %}
+
             </div>
-        </section>
-    </main>
 
-    {% endblock content %}
+        </div>
+    </section>
+</main>
+
+{% endblock content %}

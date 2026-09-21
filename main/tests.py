@@ -1,49 +1,112 @@
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
-from main.models import Experience, Education
+
+from main.models import Education, Experience
 
 
 class MainTest(TestCase):
     def setUp(self):
         self.experience = Experience.objects.create(
             title="Human Resources - Open House Fasilkom UI",
-            description="Berperan dalam divisi Human Resources pada kegiatan Open House Fasilkom UI.",
+            description=(
+                "Berperan dalam divisi Human Resources "
+                "pada kegiatan Open House Fasilkom UI."
+            ),
             category="volunteer",
         )
 
-    def test_main_url_is_accessible(self):
-        response = self.client.get(reverse("main:show_main"))
+        self.admin = User.objects.create_superuser(
+            username="testadmin",
+            password="testpassword123",
+        )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "index.html")
-        self.assertNotContains(response, self.experience.title)
+    def test_main_url_is_accessible(self):
+        response = self.client.get(
+            reverse("main:show_main")
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
+        self.assertTemplateUsed(
+            response,
+            "index.html",
+        )
+
+        self.assertNotContains(
+            response,
+            self.experience.title,
+        )
+
         self.assertContains(
             response,
             f'href="{reverse("main:show_experience")}"'
         )
 
     def test_nonexistent_page_returns_404(self):
-        response = self.client.get("/halaman-yang-tidak-ada/")
-        self.assertEqual(response.status_code, 404)
+        response = self.client.get(
+            "/halaman-yang-tidak-ada/"
+        )
+
+        self.assertEqual(
+            response.status_code,
+            404,
+        )
 
     def test_experience_model(self):
         self.assertEqual(
             str(self.experience),
-            "Human Resources - Open House Fasilkom UI"
+            "Human Resources - Open House Fasilkom UI",
         )
-        self.assertEqual(self.experience.category, "volunteer")
-        self.assertTrue(self.experience.is_ongoing)
+
+        self.assertEqual(
+            self.experience.category,
+            "volunteer",
+        )
+
+        self.assertTrue(
+            self.experience.is_ongoing
+        )
 
     def test_experience_page(self):
-        response = self.client.get(reverse("main:show_experience"))
+        response = self.client.get(
+            reverse("main:show_experience")
+        )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "experience.html")
-        self.assertContains(response, self.experience.title)
-        self.assertContains(response, self.experience.description)
-        self.assertContains(response, "Volunteer")
-        self.assertContains(response, "Sedang berlangsung")
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
+        self.assertTemplateUsed(
+            response,
+            "experience.html",
+        )
+
+        self.assertContains(
+            response,
+            self.experience.title,
+        )
+
+        self.assertContains(
+            response,
+            self.experience.description,
+        )
+
+        self.assertContains(
+            response,
+            "Volunteer",
+        )
+
+        self.assertContains(
+            response,
+            "Sedang berlangsung",
+        )
+
         self.assertContains(
             response,
             f'href="{reverse("main:show_main")}"'
@@ -52,36 +115,61 @@ class MainTest(TestCase):
     def test_empty_experience_page(self):
         Experience.objects.all().delete()
 
-        response = self.client.get(reverse("main:show_experience"))
+        response = self.client.get(
+            reverse("main:show_experience")
+        )
 
         self.assertContains(
             response,
-            "Belum ada pengalaman yang ditambahkan."
+            "Belum ada pengalaman yang ditambahkan.",
         )
 
     def test_completed_experience(self):
         self.experience.ended_at = timezone.now()
         self.experience.save()
 
-        response = self.client.get(reverse("main:show_experience"))
+        response = self.client.get(
+            reverse("main:show_experience")
+        )
 
-        self.assertFalse(self.experience.is_ongoing)
-        self.assertContains(response, "Selesai")
-        self.assertNotContains(response, "Sedang berlangsung")
+        self.assertFalse(
+            self.experience.is_ongoing
+        )
+
+        self.assertContains(
+            response,
+            "Selesai",
+        )
+
+        self.assertNotContains(
+            response,
+            "Sedang berlangsung",
+        )
 
     def test_create_experience(self):
+        self.client.force_login(
+            self.admin
+        )
+
         response = self.client.post(
-            reverse("main:create_experience"),
+            reverse(
+                "main:create_experience"
+            ),
             {
                 "title": "Staff Media BEM",
-                "description": "Mengelola publikasi dan dokumentasi.",
+                "description": (
+                    "Mengelola publikasi dan dokumentasi."
+                ),
                 "category": "volunteer",
                 "thumbnail": "",
                 "ended_at": "",
             },
         )
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.status_code,
+            302,
+        )
 
         self.assertTrue(
             Experience.objects.filter(
@@ -89,8 +177,11 @@ class MainTest(TestCase):
             ).exists()
         )
 
-
     def test_edit_experience(self):
+        self.client.force_login(
+            self.admin
+        )
+
         response = self.client.post(
             reverse(
                 "main:edit_experience",
@@ -105,7 +196,10 @@ class MainTest(TestCase):
             },
         )
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.status_code,
+            302,
+        )
 
         self.experience.refresh_from_db()
 
@@ -114,8 +208,11 @@ class MainTest(TestCase):
             "Updated Experience",
         )
 
-
     def test_delete_experience(self):
+        self.client.force_login(
+            self.admin
+        )
+
         response = self.client.post(
             reverse(
                 "main:delete_experience",
@@ -123,7 +220,10 @@ class MainTest(TestCase):
             )
         )
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.status_code,
+            302,
+        )
 
         self.assertFalse(
             Experience.objects.filter(
@@ -131,13 +231,18 @@ class MainTest(TestCase):
             ).exists()
         )
 
-
     def test_experience_json(self):
         response = self.client.get(
-            reverse("main:get_experience_json")
+            reverse(
+                "main:get_experience_json"
+            )
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
         self.assertEqual(
             response["Content-Type"],
             "application/json",
@@ -146,6 +251,81 @@ class MainTest(TestCase):
         self.assertContains(
             response,
             self.experience.title,
+        )
+
+    def test_anonymous_cannot_create_experience(self):
+        response = self.client.get(
+            reverse(
+                "main:create_experience"
+            )
+        )
+
+        self.assertEqual(
+            response.status_code,
+            302,
+        )
+
+        self.assertIn(
+            "/login/",
+            response.url,
+        )
+
+    def test_normal_user_cannot_create_experience(self):
+        user = User.objects.create_user(
+            username="normaluser",
+            password="testpassword123",
+        )
+
+        self.client.force_login(user)
+
+        response = self.client.get(
+            reverse(
+                "main:create_experience"
+            )
+        )
+
+        self.assertEqual(
+            response.status_code,
+            403,
+        )
+
+    def test_toggle_star_experience(self):
+        user = User.objects.create_user(
+            username="staruser",
+            password="testpassword123",
+        )
+
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse(
+                "main:toggle_star_experience",
+                args=[self.experience.id],
+            )
+        )
+
+        self.assertEqual(
+            response.status_code,
+            302,
+        )
+
+        self.assertTrue(
+            self.experience.starred_by.filter(
+                id=user.id
+            ).exists()
+        )
+
+        self.client.post(
+            reverse(
+                "main:toggle_star_experience",
+                args=[self.experience.id],
+            )
+        )
+
+        self.assertFalse(
+            self.experience.starred_by.filter(
+                id=user.id
+            ).exists()
         )
 
 
@@ -158,10 +338,13 @@ class EducationTest(TestCase):
             start_year=2025,
             end_year=None,
             grade="-",
-            activities="Staff of Media - BEM Fasilkom UI",
+            activities=(
+                "Staff of Media - BEM Fasilkom UI"
+            ),
             achievements="",
             description=(
-                "Mahasiswa Ilmu Komputer di Fakultas Ilmu Komputer "
+                "Mahasiswa Ilmu Komputer di "
+                "Fakultas Ilmu Komputer "
                 "Universitas Indonesia."
             ),
             school_image="/static/img/ui.png",
@@ -169,24 +352,54 @@ class EducationTest(TestCase):
         )
 
     def test_education_url_is_accessible(self):
-        response = self.client.get(reverse("main:show_education"))
+        response = self.client.get(
+            reverse(
+                "main:show_education"
+            )
+        )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "education.html")
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
+        self.assertTemplateUsed(
+            response,
+            "education.html",
+        )
 
     def test_education_data_appears_on_page(self):
-        response = self.client.get(reverse("main:show_education"))
+        response = self.client.get(
+            reverse(
+                "main:show_education"
+            )
+        )
 
-        self.assertContains(response, self.education.institution)
-        self.assertContains(response, self.education.field_of_study)
-        self.assertContains(response, "Undergraduate")
+        self.assertContains(
+            response,
+            self.education.institution,
+        )
+
+        self.assertContains(
+            response,
+            self.education.field_of_study,
+        )
+
+        self.assertContains(
+            response,
+            "Undergraduate",
+        )
 
     def test_empty_education_page(self):
         Education.objects.all().delete()
 
-        response = self.client.get(reverse("main:show_education"))
+        response = self.client.get(
+            reverse(
+                "main:show_education"
+            )
+        )
 
         self.assertContains(
             response,
-            "No education added yet"
+            "No education added yet",
         )

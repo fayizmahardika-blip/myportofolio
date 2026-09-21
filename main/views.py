@@ -1,3 +1,4 @@
+import datetime
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -6,9 +7,18 @@ from main.forms import EducationForm, ExperienceForm
 from django.core import serializers
 from django.http import HttpResponse
 
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 def show_main(request):
+
+    last_login = request.COOKIES.get(
+    "last_login",
+    "Belum ada sesi login / Cookie tidak ditemukan",
+    )
     context = {
         "name": "Fayiz Mahardika Ghulam Afandi",
         "npm": "2506617374",
@@ -16,6 +26,7 @@ def show_main(request):
         "bio": (
             "CS student at Universitas Indonesia for longer than planned."
         ),
+        "last_login": last_login,
     }
 
     return render(request, "index.html", context)
@@ -48,12 +59,19 @@ def show_experience(request):
         context,
     )
 
+@login_required(login_url="/login/")
 def create_experience(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     form = ExperienceForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
         form.save()
-        messages.success(request, "Experience berhasil ditambahkan!")
+        messages.success(
+            request,
+            "Experience berhasil ditambahkan!"
+        )
         return redirect("main:show_experience")
 
     context = {
@@ -61,7 +79,11 @@ def create_experience(request):
         "form": form,
     }
 
-    return render(request, "experience_form.html", context)
+    return render(
+        request,
+        "experience_form.html",
+        context,
+    )
 
 def show_education(request):
     json_response = get_education_json(request)
@@ -125,7 +147,11 @@ def delete_education(request, education_id):
 
     return redirect("main:show_education")
 
+@login_required(login_url="/login/")
 def edit_experience(request, experience_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     experience = get_object_or_404(
         Experience,
         pk=experience_id,
@@ -140,9 +166,8 @@ def edit_experience(request, experience_id):
         form.save()
         messages.success(
             request,
-            "Experience berhasil diperbarui!",
+            "Experience berhasil diperbarui!"
         )
-
         return redirect("main:show_experience")
 
     context = {
@@ -157,7 +182,12 @@ def edit_experience(request, experience_id):
         context,
     )
 
+
+@login_required(login_url="/login/")
 def delete_experience(request, experience_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     experience = get_object_or_404(
         Experience,
         pk=experience_id,
@@ -167,7 +197,7 @@ def delete_experience(request, experience_id):
         experience.delete()
         messages.success(
             request,
-            "Experience berhasil dihapus!",
+            "Experience berhasil dihapus!"
         )
 
     return redirect("main:show_experience")
@@ -183,11 +213,90 @@ def get_experience_json(request):
         )
 
     experience_json = serializers.serialize(
-        "json",
-        experiences,
+    "json",
+    experiences,
+    use_natural_foreign_keys=True,
     )
 
     return HttpResponse(
         experience_json,
         content_type="application/json",
     )
+
+def register(request):
+    form = UserCreationForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(
+            request,
+            "Akun berhasil dibuat. Silakan login."
+        )
+        return redirect("main:login")
+
+    context = {
+        "name": "Fayiz Mahardika Ghulam Afandi",
+        "form": form,
+    }
+
+    return render(
+        request,
+        "register.html",
+        context,
+    )
+
+def login_user(request):
+    form = AuthenticationForm(
+        request,
+        data=request.POST or None,
+    )
+
+    if request.method == "POST" and form.is_valid():
+        user = form.get_user()
+
+        login(request, user)
+
+        response = redirect("main:show_main")
+
+        response.set_cookie(
+            "last_login",
+            datetime.datetime.now().strftime(
+                "%Y-%m-%d %H:%M:%S"
+            ),
+        )
+
+        return response
+
+    context = {
+        "name": "Fayiz Mahardika Ghulam Afandi",
+        "form": form,
+    }
+
+    return render(
+        request,
+        "login.html",
+        context,
+    )
+
+def logout_user(request):
+    logout(request)
+
+    response = redirect("main:show_main")
+    response.delete_cookie("last_login")
+
+    return response
+
+@login_required(login_url="/login/")
+def toggle_star_experience(request, experience_id):
+    experience = get_object_or_404(
+        Experience,
+        pk=experience_id,
+    )
+
+    if request.method == "POST":
+        if request.user in experience.starred_by.all():
+            experience.starred_by.remove(request.user)
+        else:
+            experience.starred_by.add(request.user)
+
+    return redirect("main:show_experience")
