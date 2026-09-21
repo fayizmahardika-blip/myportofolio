@@ -1,52 +1,100 @@
 {% extends "base.html" %}
 
 {% block meta %}
-<title>Add Experience - {{ name }}</title>
+<title>
+    {% if experience %}
+        Edit Experience
+    {% else %}
+        Add Experience
+    {% endif %}
+    - {{ name }}
+</title>
 {% endblock meta %}
 
 {% block content %}
 
 <main>
-    <section class="experience-section">
+    <section class="education-section">
         <div class="container">
 
-            {% if experience %}
-                <p class="section-kicker">
+            <p class="section-kicker">
+                {% if experience %}
                     Update Experience
-                </p>
-
-                <h1>
-                    Edit Experience
-                </h1>
-            {% else %}
-                <p class="section-kicker">
+                {% else %}
                     Add New Experience
-                </p>
+                {% endif %}
+            </p>
 
-                <h1>
+            <h1>
+                {% if experience %}
+                    Edit Experience
+                {% else %}
                     Add Experience
-                </h1>
-            {% endif %}
+                {% endif %}
+            </h1>
 
-            <form method="post">
+
+            <form
+                method="post"
+                class="education-form"
+            >
                 {% csrf_token %}
 
-                {{ form.as_p }}
+                {% for error in form.non_field_errors %}
+                    <p class="form-error">
+                        {{ error }}
+                    </p>
+                {% endfor %}
 
-                <button type="submit" class="button">
-                    {% if experience %}
-                        Update Experience
-                    {% else %}
-                        Save Experience
-                    {% endif %}
-                </button>
 
-                <a
-                    href="{% url 'main:show_experience' %}"
-                    class="button"
-                >
-                    Cancel
-                </a>
+                {% for field in form %}
+
+                    <div class="form-group">
+
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                            <div class="form-help">
+                                {{ field.help_text }}
+                            </div>
+                        {% endif %}
+
+                        {% for error in field.errors %}
+                            <p class="form-error">
+                                {{ error }}
+                            </p>
+                        {% endfor %}
+
+                    </div>
+
+                {% endfor %}
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        class="button"
+                    >
+                        {% if experience %}
+                            Update Experience
+                        {% else %}
+                            Save Experience
+                        {% endif %}
+                    </button>
+
+                    <a
+                        href="{% url 'main:show_experience' %}"
+                        class="button button-secondary"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
 
             </form>
 

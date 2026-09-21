@@ -8,7 +8,8 @@ db.sqlite3
 __pycache__/
 *.pyc
 
-# OS & IDE Files
+# OS & IDE Filespython manage.py check
+python manage.py migrate
 .DS_Store
 .vscode/*
 !.vscode/settings.json
