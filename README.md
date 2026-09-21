@@ -52,3 +52,22 @@ Strategi prompting yang saya gunakan adalah memberikan konteks project, potongan
 
 Seluruh kode yang digunakan tetap saya review, sesuaikan, dan jalankan sendiri pada project untuk memastikan implementasinya sesuai dengan kebutuhan tugas dan dapat berjalan dengan benar.
 
+
+
+### Tugas 3
+
+1. saya menggunakan ModelForm karena form dapat dibuat berdasarkan model yang sudah ada sehingga tidak perlu membuat seluruh input HTML secara manual. Selain itu, ModelForm juga membantu melakukan validasi data sesuai dengan field yang terdapat pada model. `{% csrf_token %}` diperlukan untuk melindungi form dari serangan CSRF, yaitu request yang dikirim oleh pihak lain dengan memanfaatkan sesi pengguna.
+
+2. JSON lebih sering digunakan pada aplikasi web modern karena formatnya lebih sederhana dan ringkas dibandingkan XML. JSON juga lebih mudah diproses oleh JavaScript sehingga cocok digunakan untuk pertukaran data antara frontend dan backend. Selain itu, struktur JSON lebih mudah dibaca dan tidak membutuhkan banyak tag seperti pada XML.
+
+3. pada project saya, view mengambil data Experience dari database menggunakan Django QuerySet. Karena object dari model Django tidak dapat langsung dikirim sebagai JSON, data tersebut harus melalui proses serialization terlebih dahulu. Serialization mengubah object Django menjadi format JSON yang dapat dikirim melalui `HttpResponse` dengan `content_type="application/json"`. Pada halaman Experience, data JSON tersebut kemudian di-deserialize kembali menjadi object agar dapat ditampilkan pada template.
+
+#### AI Disclosure
+
+dalam pengerjaan Tugas 3, saya menggunakan ChatGPT sebagai alat bantu untuk memahami implementasi ModelForm, CRUD, serta JSON serialization dan deserialization pada Django.
+
+AI membantu saya dalam memahami perbedaan create dan update menggunakan `instance`, menyusun routing untuk model Experience yang menggunakan UUID, membuat fitur create, update, delete, dan JSON, serta membantu mengevaluasi unit test dan melakukan debugging ketika terdapat error.
+
+strategi prompting yang saya gunakan adalah memberikan konteks project, potongan kode, struktur model, dan hasil implementasi secara bertahap. Setelah mendapatkan penjelasan atau contoh dari AI, saya menyesuaikannya kembali dengan struktur project saya.
+
+setiap implementasi tetap saya cek dan jalankan sendiri menggunakan `python manage.py check`, `python manage.py test`, serta pengujian langsung melalui browser.
