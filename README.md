@@ -71,3 +71,39 @@ AI membantu saya dalam memahami perbedaan create dan update menggunakan `instanc
 strategi prompting yang saya gunakan adalah memberikan konteks project, potongan kode, struktur model, dan hasil implementasi secara bertahap. Setelah mendapatkan penjelasan atau contoh dari AI, saya menyesuaikannya kembali dengan struktur project saya.
 
 setiap implementasi tetap saya cek dan jalankan sendiri menggunakan `python manage.py check`, `python manage.py test`, serta pengujian langsung melalui browser.
+
+
+
+## Tugas 4 
+## AI disclosure
+
+dalam pengerjaan Tugas 4 ini, saya menggunakan ChatGPT sebagai alat bantu untuk memahami requirement tugas dan membantu proses implementasi beberapa bagian kode.
+
+saya tidak langsung meminta AI untuk mengerjakan seluruh tugas sekaligus. saya lebih banyak menggunakan pendekatan step-by-step, yaitu membaca requirement terlebih dahulu, lalu meminta AI menjelaskan maksud dari setiap bagian dan mengerjakannya satu per satu. jika ada bagian yang belum saya pahami atau hasil implementasinya tidak sesuai, saya memberikan potongan kode atau output terminal untuk dianalisis kembali.
+
+beberapa bagian yang dibantu oleh AI pada tugas ini antara lain:
+
+- memahami perbedaan hak akses antara pengguna biasa, Editor, dan superuser;
+- membantu mengimplementasikan role `Editor` menggunakan Django Group;
+- menyesuaikan authorization pada fitur Experience agar Editor hanya dapat melakukan edit, sedangkan create dan delete tetap hanya dapat dilakukan oleh superuser;
+- membantu menyesuaikan tampilan tombol pada template berdasarkan role pengguna;
+- membantu membuat dan mengevaluasi test untuk memastikan pembatasan akses berjalan di sisi server;
+- membantu mengecek kembali implementasi fitur star, autentikasi, session, cookie, CSRF, serta endpoint JSON yang sebelumnya sudah dibuat pada Tutorial 4;
+- membantu menyusun dokumentasi dan AI disclosure pada README.
+
+strategi prompting yang saya gunakan biasanya dengan memberikan konteks project terlebih dahulu, kemudian meminta penjelasan dan implementasi secara bertahap. contohnya seperti meminta AI untuk menganalisis requirement Tugas 4, menjelaskan bagian yang belum dikerjakan, lalu melakukan perubahan satu fitur pada satu waktu agar saya tetap bisa mengikuti alur kodenya.
+
+saya tetap melakukan pengecekan dan pengujian secara manual setelah mendapatkan bantuan dari AI, seperti menjalankan `python manage.py check`, `python manage.py test`, mencoba login menggunakan role yang berbeda, serta memastikan tombol dan hak akses yang muncul sudah sesuai dengan requirement tugas.
+
+salah satu keterbatasan yang saya temui adalah AI kadang memberikan solusi berdasarkan asumsi mengenai struktur project. karena itu, saya perlu memberikan kode dan kondisi project yang sebenarnya agar solusi dapat disesuaikan. beberapa implementasi juga saya sesuaikan secara manual agar tetap konsisten dengan struktur project saya, terutama karena bagian portofolio yang saya gunakan adalah `Experience`, sedangkan contoh pada tutorial menggunakan `Project`.
+
+secara keseluruhan, AI saya gunakan sebagai alat bantu untuk memahami, debugging, dan mengecek implementasi, sedangkan keputusan akhir, pengujian, serta penyesuaian kode tetap saya lakukan berdasarkan kondisi project saya sendiri.
+
+### contoh prompt yang digunakan
+
+beberapa contoh prompt atau instruksi yang saya gunakan selama pengerjaan:
+
+- "analisis setiap requirement Tugas 4 dan jelaskan bagian mana yang sudah dan belum ada di project saya."
+- "jelaskan implementasi role Editor step-by-step, jangan langsung semuanya sekaligus."
+- "bagaimana cara membuat Editor hanya bisa edit tetapi tidak bisa create dan delete?"
+- "bantu buat test untuk memastikan authorization Editor benar-benar bekerja di sisi server."
