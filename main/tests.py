@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -21,6 +21,24 @@ class MainTest(TestCase):
             username="testadmin",
             password="testpassword123",
         )
+        self.editor_group = Group.objects.create(
+            name="Editor"
+        )
+
+        self.editor = User.objects.create_user(
+            username="editor_test",
+            password="testpassword123",
+        )
+
+        self.editor.groups.add(
+            self.editor_group
+        )
+
+        self.normal_user = User.objects.create_user(
+            username="normal_test",
+            password="testpassword123",
+        )
+    
 
     def test_main_url_is_accessible(self):
         response = self.client.get(
@@ -326,6 +344,85 @@ class MainTest(TestCase):
             self.experience.starred_by.filter(
                 id=user.id
             ).exists()
+        )
+    def test_editor_can_edit_experience(self):
+        self.client.force_login(self.editor)
+
+        response = self.client.post(
+            reverse(
+                "main:edit_experience",
+                args=[self.experience.id],
+            ),
+            {
+                "title": "Edited by Editor",
+                "description": "Updated by editor",
+                "category": "volunteer",
+                "thumbnail": "",
+                "ended_at": "",
+            },
+        )
+
+        self.assertEqual(
+            response.status_code,
+            302,
+        )
+
+        self.experience.refresh_from_db()
+
+        self.assertEqual(
+            self.experience.title,
+            "Edited by Editor",
+        )
+
+
+    def test_editor_cannot_create_experience(self):
+        self.client.force_login(self.editor)
+
+        response = self.client.get(
+            reverse("main:create_experience")
+        )
+
+        self.assertEqual(
+            response.status_code,
+            403,
+        )
+
+
+    def test_editor_cannot_delete_experience(self):
+        self.client.force_login(self.editor)
+
+        response = self.client.post(
+            reverse(
+                "main:delete_experience",
+                args=[self.experience.id],
+            )
+        )
+
+        self.assertEqual(
+            response.status_code,
+            403,
+        )
+
+        self.assertTrue(
+            Experience.objects.filter(
+                id=self.experience.id
+            ).exists()
+        )
+
+
+    def test_normal_user_cannot_edit_experience(self):
+        self.client.force_login(self.normal_user)
+
+        response = self.client.get(
+            reverse(
+                "main:edit_experience",
+                args=[self.experience.id],
+            )
+        )
+
+        self.assertEqual(
+            response.status_code,
+            403,
         )
 
 

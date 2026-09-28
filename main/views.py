@@ -15,6 +15,9 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
+def user_is_editor(user):
+    return user.groups.filter(name="Editor").exists()
+
 def show_main(request):
 
     last_login = request.COOKIES.get(
@@ -53,6 +56,10 @@ def show_experience(request):
         "name": "Fayiz Mahardika Ghulam Afandi",
         "experience_list": experiences,
         "title_query": title_query,
+        "is_editor": (
+            request.user.is_authenticated
+            and user_is_editor(request.user)
+        ),
     }
 
     return render(
@@ -151,7 +158,10 @@ def delete_education(request, education_id):
 
 @login_required(login_url="/login/")
 def edit_experience(request, experience_id):
-    if not request.user.is_superuser:
+    if not (
+        request.user.is_superuser
+        or user_is_editor(request.user)
+    ):
         raise PermissionDenied
 
     experience = get_object_or_404(
@@ -166,11 +176,15 @@ def edit_experience(request, experience_id):
 
     if request.method == "POST" and form.is_valid():
         form.save()
+
         messages.success(
             request,
             "Experience berhasil diperbarui!"
         )
-        return redirect("main:show_experience")
+
+        return redirect(
+            "main:show_experience"
+        )
 
     context = {
         "name": "Fayiz Mahardika Ghulam Afandi",
@@ -183,6 +197,8 @@ def edit_experience(request, experience_id):
         "experience_form.html",
         context,
     )
+
+    
 
 
 @login_required(login_url="/login/")

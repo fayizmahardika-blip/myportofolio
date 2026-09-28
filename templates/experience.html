@@ -96,8 +96,7 @@
 
 
 
-                            {% if user.is_superuser %}
-
+                            {% if user.is_superuser or is_editor %}
                                 <div class="experience-actions">
 
                                     <a
@@ -107,23 +106,24 @@
                                         Edit
                                     </a>
 
-                                    <form
-                                        method="post"
-                                        action="{% url 'main:delete_experience' experience.id %}"
-                                        style="display: inline;"
-                                    >
-                                        {% csrf_token %}
-
-                                        <button
-                                            type="submit"
-                                            class="button button-danger"
+                                    {% if user.is_superuser %}
+                                        <form
+                                            method="post"
+                                            action="{% url 'main:delete_experience' experience.id %}"
+                                            style="display: inline;"
                                         >
-                                            Delete
-                                        </button>
-                                    </form>
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="button button-danger"
+                                            >
+                                                Delete
+                                            </button>
+                                        </form>
+                                    {% endif %}
 
                                 </div>
-
                             {% endif %}
 
                         </div>
