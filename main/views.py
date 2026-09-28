@@ -7,6 +7,8 @@ from main.forms import EducationForm, ExperienceForm
 from django.core import serializers
 from django.http import HttpResponse
 
+
+
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
@@ -300,3 +302,5 @@ def toggle_star_experience(request, experience_id):
             experience.starred_by.add(request.user)
 
     return redirect("main:show_experience")
+
+
