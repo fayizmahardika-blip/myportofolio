@@ -75,7 +75,7 @@ setiap implementasi tetap saya cek dan jalankan sendiri menggunakan `python mana
 
 
 ## Tugas 4 
-## AI disclosure
+## AI disclosure 
 
 dalam pengerjaan Tugas 4 ini, saya menggunakan ChatGPT sebagai alat bantu untuk memahami requirement tugas dan membantu proses implementasi beberapa bagian kode.
 

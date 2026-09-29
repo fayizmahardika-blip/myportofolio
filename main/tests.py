@@ -2,6 +2,8 @@ from django.contrib.auth.models import Group, User
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
+from datetime import timedelta
+
 
 from main.models import Education, Experience
 
@@ -92,76 +94,69 @@ class MainTest(TestCase):
 
     def test_experience_page(self):
         response = self.client.get(
-            reverse("main:show_experience")
+            reverse("main:get_experience_json")
         )
 
         self.assertEqual(
             response.status_code,
-            200,
+            200
         )
 
-        self.assertTemplateUsed(
-            response,
-            "experience.html",
-        )
+        data = response.json()
 
-        self.assertContains(
-            response,
+        titles = [
+            item["fields"]["title"]
+            for item in data
+        ]
+
+        self.assertIn(
             self.experience.title,
-        )
-
-        self.assertContains(
-            response,
-            self.experience.description,
-        )
-
-        self.assertContains(
-            response,
-            "Volunteer",
-        )
-
-        self.assertContains(
-            response,
-            "Sedang berlangsung",
-        )
-
-        self.assertContains(
-            response,
-            f'href="{reverse("main:show_main")}"'
+            titles
         )
 
     def test_empty_experience_page(self):
         Experience.objects.all().delete()
 
         response = self.client.get(
-            reverse("main:show_experience")
+            reverse("main:get_experience_json")
         )
 
-        self.assertContains(
-            response,
-            "Belum ada pengalaman yang ditambahkan.",
+        self.assertEqual(
+            response.status_code,
+            200
+        )
+
+        self.assertEqual(
+            response.json(),
+            []
         )
 
     def test_completed_experience(self):
-        self.experience.ended_at = timezone.now()
+        self.experience.ended_at = (
+            timezone.localdate()
+            - timedelta(days=1)
+        )
         self.experience.save()
 
         response = self.client.get(
-            reverse("main:show_experience")
+            reverse("main:get_experience_json")
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200
+        )
+
+        data = response.json()
+
+        experience_data = next(
+            item
+            for item in data
+            if item["pk"] == str(self.experience.id)
         )
 
         self.assertFalse(
-            self.experience.is_ongoing
-        )
-
-        self.assertContains(
-            response,
-            "Selesai",
-        )
-
-        self.assertNotContains(
-            response,
-            "Sedang berlangsung",
+            experience_data["fields"]["is_ongoing"]
         )
 
     def test_create_experience(self):
