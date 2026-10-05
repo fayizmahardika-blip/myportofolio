@@ -359,18 +359,33 @@ def logout_user(request):
     return response
 
 @login_required(login_url="/login/")
+@require_POST
 def toggle_star_experience(request, experience_id):
     experience = get_object_or_404(
         Experience,
         pk=experience_id,
     )
 
-    if request.method == "POST":
-        if request.user in experience.starred_by.all():
-            experience.starred_by.remove(request.user)
-        else:
-            experience.starred_by.add(request.user)
+    if request.user in experience.starred_by.all():
+        experience.starred_by.remove(request.user)
+        is_starred = False
+        message = "Star berhasil dihapus."
+    else:
+        experience.starred_by.add(request.user)
+        is_starred = True
+        message = "Experience berhasil diberi star."
+
+    star_count = experience.starred_by.count()
+
+    if request.headers.get("Accept") == "application/json":
+        return JsonResponse(
+            {
+                "message": message,
+                "is_starred": is_starred,
+                "star_count": star_count,
+            },
+            status=200,
+        )
 
     return redirect("main:show_experience")
-
 

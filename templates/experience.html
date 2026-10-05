@@ -101,6 +101,8 @@
     {% include "components/experience_form_modal.html" %}
 {% endif %}
 
+
+
 <script>
     const BASE_EXPERIENCE_ENDPOINT =
         "{% url 'main:get_experience_json' %}";
@@ -112,6 +114,9 @@
         "{{ is_editor|yesno:'true,false' }}" === "true";
 
     let experiencesAbortController;
+
+    const IS_AUTHENTICATED =
+    "{{ user.is_authenticated|yesno:'true,false' }}" === "true";
 
 
     // DOM elements
@@ -271,34 +276,9 @@
             ? `Dibintangi oleh ${escapeHtml(experience.starred_by_names)}`
             : "Jadilah yang pertama memberi star";
 
-
-        const statusText =
-            experience.is_ongoing
-            ? "Sedang berlangsung"
-            : "Selesai";
-
-
-        const completeCardHtml = `
-            ${thumbnailHtml}
-
-            <div class="experience-content">
-
-                <span class="experience-category">
-                    ${escapeHtml(experience.category)}
-                </span>
-
-                <h2>
-                    ${escapeHtml(experience.title)}
-                </h2>
-
-                <p class="experience-description">
-                    ${escapeHtml(experience.description)}
-                </p>
-
-                <p class="experience-status">
-                    ${statusText}
-                </p>
-
+        const starHtml =
+            IS_AUTHENTICATED
+            ? `
                 <form
                     method="post"
                     action="${starUrl}"
@@ -315,22 +295,57 @@
                             ★
                         </span>
 
-                        ${starText}
+                        <span class="star-label">
+                            ${starText}
+                        </span>
 
                         <span class="star-count">
                             ${experience.star_count}
                         </span>
                     </button>
                 </form>
+            `
+            : "";
+
+
+        const statusText =
+            experience.is_ongoing
+            ? "Sedang berlangsung"
+            : "Selesai";
+
+
+        const completeCardHtml = `
+            ${thumbnailHtml}
+
+            <div class="experience-content">
+                <span class="experience-category">
+                    ${escapeHtml(experience.category)}
+                </span>
+
+                <h2>
+                    ${escapeHtml(experience.title)}
+                </h2>
+
+                <p class="experience-description">
+                    ${escapeHtml(experience.description)}
+                </p>
+
+                <p class="experience-status">
+                    ${statusText}
+                </p>
+
+                <p class="experience-status">
+                     ${statusText}
+                </p>
+
+                ${starHtml}
 
                 <div class="experience-actions">
                     ${editHtml}
                     ${deleteHtml}
                 </div>
-
             </div>
         `;
-
         articleElement.innerHTML =
             completeCardHtml;
 
@@ -487,6 +502,94 @@ function getCookie(name) {
     return cookieValue;
 }
 
+async function toggleStarExperience(form) {
+    const button =
+        form.querySelector(
+            'button[type="submit"]'
+        );
+
+    const label =
+        button.querySelector(
+            ".star-label"
+        );
+
+    const count =
+        button.querySelector(
+            ".star-count"
+        );
+
+    button.disabled = true;
+
+    try {
+        const response = await fetch(
+            form.action,
+            {
+                method: "POST",
+                headers: {
+                    "Accept":
+                        "application/json",
+
+                    "X-CSRFToken":
+                        getCookie(
+                            "csrftoken"
+                        ),
+                },
+            }
+        );
+
+        const result =
+            await response
+                .json()
+                .catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(
+                result.message ||
+                `Request gagal (${response.status})`
+            );
+        }
+
+        button.classList.toggle(
+            "is-starred",
+            result.is_starred
+        );
+
+        label.textContent =
+            result.is_starred
+                ? "Unstar"
+                : "Star";
+
+        count.textContent =
+            result.star_count;
+
+        button.title =
+            result.is_starred
+                ? "Kamu sudah memberi star"
+                : "Beri star pada experience ini";
+
+        showToast(
+            "Berhasil",
+            result.message,
+            "success"
+        );
+
+    } catch (error) {
+        console.error(
+            "Error toggling star:",
+            error
+        );
+
+        showToast(
+            "Gagal",
+            "Star tidak dapat diperbarui.",
+            "error"
+        );
+
+    } finally {
+        button.disabled = false;
+    }
+}
+
 
 async function addExperience(event) {
     event.preventDefault();
@@ -532,6 +635,26 @@ async function addExperience(event) {
                 "Berhasil",
                 "Experience baru berhasil ditambahkan!",
                 "success"
+            );
+
+            gridContainer.addEventListener(
+                "submit",
+                function (event) {
+                    const form =
+                        event.target.closest(
+                            ".star-form"
+                        );
+
+                    if (!form) {
+                        return;
+                    }
+
+                    event.preventDefault();
+
+                    toggleStarExperience(
+                        form
+                    );
+                }
             );
 
             fetchExperiences(
