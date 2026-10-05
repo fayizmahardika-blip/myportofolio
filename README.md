@@ -128,3 +128,25 @@ saya biasanya memberikan potongan kode, error, atau requirement tugas terlebih d
 saya juga melakukan pengecekan manual dengan menjalankan project secara lokal, mencoba fitur seperti search, add experience, star, edit, delete, dan menjalankan test Django untuk memastikan perubahan yang dibuat tetap berjalan dengan benar.
 
 karena contoh pada tutorial menggunakan bagian Projects, saya menyesuaikan implementasinya ke bagian Experience yang saya gunakan sejak Tugas 3 dan Tugas 4. beberapa penyesuaian yang saya lakukan antara lain pada field form, endpoint JSON, hak akses user, dan tampilan card Experience.
+
+
+#### Contoh penggunaan AI
+
+beberapa contoh prompt yang saya gunakan selama pengerjaan Tugas 5 antara lain:
+
+- meminta penjelasan alur `fetch()` dari browser sampai response kembali dari Django.
+- meminta bantuan debugging ketika data Experience sudah berhasil diambil lewat AJAX tetapi state loading, error, dan empty masih tetap terlihat.
+- meminta bantuan mengecek implementasi modal Add Experience dan request POST menggunakan `X-CSRFToken`.
+- meminta bantuan mencari penyebab tombol Star/Unstar masih melakukan reload dan mengubahnya menjadi interaksi AJAX tanpa reload halaman.
+
+saya lebih sering menggunakan AI secara bertahap, misalnya meminta satu perubahan terlebih dahulu, lalu menjalankan project dan mengecek hasilnya sebelum lanjut ke bagian berikutnya. cara ini membantu saya mengetahui perubahan mana yang menyebabkan error jika terjadi masalah.
+
+#### keterbatasan AI dan perbaikan manual
+
+selama pengerjaan, saya menemukan bahwa solusi dari AI tidak selalu langsung cocok dengan struktur project saya. beberapa kode perlu saya sesuaikan sendiri karena contoh pada tutorial menggunakan Projects, sedangkan bagian yang saya gunakan adalah Experience.
+
+salah satu contoh kesalahan yang terjadi adalah saat implementasi Star/Unstar AJAX. perubahan awal masih menyebabkan halaman melakukan reload, kemudian setelah tipe tombol diubah, tombol justru sempat tidak dapat digunakan karena selector JavaScript masih mencari tombol dengan `type="submit"`. masalah tersebut baru dapat diperbaiki setelah saya mengecek kembali hubungan antara HTML yang dirender dan event handler JavaScript.
+
+saya juga melakukan penyesuaian manual pada CSS modal dan tombol karena beberapa styling yang diberikan AI tidak langsung sesuai dengan stylesheet yang sudah ada. setelah setiap perubahan, saya mencoba fitur secara langsung di browser dan menjalankan kembali test Django agar perubahan baru tidak merusak fitur sebelumnya.
+
+dari proses tersebut, saya menyadari bahwa AI lebih efektif digunakan sebagai alat bantu untuk memahami, memberi alternatif solusi, dan membantu debugging, tetapi hasilnya tetap perlu diperiksa dan disesuaikan dengan konteks project yang sebenarnya.
