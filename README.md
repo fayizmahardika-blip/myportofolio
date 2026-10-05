@@ -117,6 +117,12 @@ beberapa contoh prompt atau instruksi yang saya gunakan selama pengerjaan:
 
 3. XSS atau Cross-Site Scripting adalah serangan ketika input dari user dapat dianggap sebagai kode HTML atau JavaScript lalu dijalankan oleh browser. data yang dirender langsung melalui template Django relatif lebih aman karena Django melakukan auto-escaping terhadap data yang ditampilkan. pada saat data diambil melalui AJAX dan kemudian dimasukkan ke halaman menggunakan JavaScript seperti `innerHTML`, proses auto-escaping dari template Django tidak lagi terjadi secara otomatis. karena itu, pada bagian Experience saya menggunakan `escapeHtml()` untuk mengamankan data sebelum dimasukkan ke HTML dan `strip_tags()` di sisi server untuk membersihkan input yang masuk.
 
+pada Tugas 5, saya menerapkan pola AJAX secara end-to-end pada bagian Experience. data Experience diambil dari endpoint JSON menggunakan `fetch()`, pencarian menggunakan debouncing, dan penambahan data dilakukan melalui modal tanpa me-reload halaman.
+
+saya juga menambahkan loading, empty, dan error state, notifikasi toast, perlindungan XSS menggunakan `escapeHtml()` dan `strip_tags()`, serta pengiriman CSRF token pada request POST.
+
+sebagai tambahan di luar requirement minimum, fitur Star/Unstar pada Experience juga saya ubah menggunakan AJAX sehingga jumlah star dan status tombol dapat berubah langsung tanpa reload halaman. saya juga merapikan tampilan tombol dan modal supaya interaksi di halaman Experience lebih konsisten.
+
 ### AI disclosure
 
 saya menggunakan ChatGPT sebagai alat bantu selama pengerjaan proyek ini, terutama untuk membantu memahami requirement tugas, menjelaskan konsep yang masih belum saya pahami, dan membantu debugging ketika ada error pada kode.
@@ -129,6 +135,7 @@ saya juga melakukan pengecekan manual dengan menjalankan project secara lokal, m
 
 karena contoh pada tutorial menggunakan bagian Projects, saya menyesuaikan implementasinya ke bagian Experience yang saya gunakan sejak Tugas 3 dan Tugas 4. beberapa penyesuaian yang saya lakukan antara lain pada field form, endpoint JSON, hak akses user, dan tampilan card Experience.
 
+pada tahap akhir, saya juga menggunakan AI untuk membantu debugging implementasi Star/Unstar menggunakan AJAX dan merapikan struktur JavaScript. solusi awal sempat menyebabkan halaman tetap melakukan reload dan selector tombol tidak sesuai, sehingga saya melakukan pengecekan ulang dan perbaikan manual sebelum fitur tersebut digunakan.
 
 #### Contoh penggunaan AI
 
