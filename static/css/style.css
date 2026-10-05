@@ -1759,3 +1759,328 @@ h1,
 .hide {
     display: none !important;
 }
+
+/* Experience: header dan kelompok tombol */
+
+.experience-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.experience-header h1 {
+    margin: 0;
+}
+
+.experience-section .experience-content {
+    width: 100%;
+}
+
+.experience-section .experience-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+
+    margin-top: 1.25rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--dark-line);
+}
+
+.experience-section .experience-actions form {
+    display: flex;
+    margin: 0;
+}
+
+
+/* Dasar tombol: terbatas pada halaman dan modal Experience */
+
+.experience-section .button,
+.experience-form-modal .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    min-height: 44px;
+    padding: 0.7rem 1.1rem;
+
+    border-radius: 12px;
+    line-height: 1.25;
+
+    transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        color 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease;
+}
+
+.experience-section .button:focus-visible,
+.experience-form-modal .button:focus-visible {
+    outline: 3px solid var(--teal-light);
+    outline-offset: 3px;
+}
+
+.experience-section .button:active:not(:disabled),
+.experience-form-modal .button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.experience-section .button:disabled,
+.experience-form-modal .button:disabled {
+    opacity: 0.55;
+    cursor: wait;
+    box-shadow: none;
+    transform: none;
+}
+
+
+/* Add: gold sebagai aksi utama */
+
+.experience-section .experience-add-button,
+.experience-form-modal .button[type="submit"] {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy-dark);
+}
+
+.experience-add-button > span {
+    font-size: 1.35rem;
+    line-height: 1;
+}
+
+
+/* Edit dan Search: teal */
+
+.experience-section .experience-actions a.button,
+.experience-section .experience-search .button {
+    background: rgba(95, 168, 168, 0.1);
+    border-color: var(--teal);
+    color: var(--teal-light);
+}
+
+
+/* Star: outline, lalu solid ketika aktif */
+
+.experience-section .button-star {
+    background: rgba(201, 166, 107, 0.08);
+    border-color: var(--gold);
+    color: var(--gold-light);
+}
+
+.experience-section .button-star.is-starred {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy-dark);
+}
+
+.experience-section .star-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 1.6rem;
+    padding: 0.15rem 0.45rem;
+
+    background: rgba(201, 166, 107, 0.16);
+    border-radius: 999px;
+
+    font-size: 0.8rem;
+    line-height: 1.2;
+}
+
+.experience-section .button-star.is-starred .star-count {
+    background: rgba(16, 24, 39, 0.12);
+}
+
+
+/* Delete: merah lembut di atas navy */
+
+.experience-section .button-danger {
+    background: rgba(235, 130, 130, 0.08);
+    border-color: rgba(235, 130, 130, 0.5);
+    color: #f2a6a6;
+}
+
+
+/* Cancel pada modal */
+
+.experience-form-modal .button-secondary {
+    background: transparent;
+    border-color: var(--dark-line);
+    color: var(--text-light);
+}
+
+
+/* Hover hanya untuk perangkat yang mendukungnya */
+
+@media (hover: hover) and (pointer: fine) {
+    .experience-section .button:hover:not(:disabled),
+    .experience-form-modal .button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+    }
+
+    .experience-section .experience-add-button:hover,
+    .experience-form-modal .button[type="submit"]:hover:not(:disabled),
+    .experience-section .button-star.is-starred:hover {
+        background: var(--gold-light);
+        border-color: var(--gold-light);
+        color: var(--navy-dark);
+    }
+
+    .experience-section .experience-actions a.button:hover,
+    .experience-section .experience-search .button:hover {
+        background: rgba(95, 168, 168, 0.2);
+        border-color: var(--teal-light);
+        color: var(--teal-light);
+    }
+
+    .experience-section .button-star:not(.is-starred):hover {
+        background: rgba(201, 166, 107, 0.18);
+        border-color: var(--gold-light);
+    }
+
+    .experience-section .button-danger:hover {
+        background: rgba(235, 130, 130, 0.18);
+        border-color: #f2a6a6;
+    }
+
+    .experience-form-modal .button-secondary:hover {
+        background: rgba(95, 168, 168, 0.1);
+        border-color: var(--teal);
+        color: var(--teal-light);
+    }
+}
+
+
+/* Layar kecil */
+
+@media (max-width: 600px) {
+    .experience-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .experience-section .experience-add-button {
+        width: 100%;
+    }
+
+    .experience-search {
+        flex-direction: column;
+    }
+
+    .experience-section .experience-actions {
+        gap: 0.75rem;
+    }
+}
+
+
+/* Hormati pengaturan pengguna yang mengurangi animasi */
+
+@media (prefers-reduced-motion: reduce) {
+    .experience-section .button,
+    .experience-form-modal .button,
+    .experience-section .experience-card {
+        transition: none;
+    }
+
+    .experience-section .button:hover,
+    .experience-form-modal .button:hover,
+    .experience-section .experience-card:hover {
+        transform: none;
+    }
+}
+
+.experience-form-modal .form-help {
+    color: var(--text-muted-dark);
+    opacity: 1;
+    line-height: 1.6;
+}
+
+/* Tombol Experience: bentuk dan ukuran konsisten */
+
+.experience-section .button,
+.experience-form-modal .button {
+    min-height: 44px;
+    padding: 0.7rem 1.1rem;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 12px;
+
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+
+/* Add, Star, dan Unstar: gold outline yang sama */
+
+.experience-section .experience-add-button,
+.experience-section .button-star,
+.experience-section .button-star.is-starred,
+.experience-form-modal .button[type="submit"] {
+    background: rgba(201, 166, 107, 0.08);
+    border-color: rgba(201, 166, 107, 0.55);
+    color: var(--gold-light);
+}
+
+
+/* Angka Star: konsisten pada kedua status */
+
+.experience-section .button-star .star-count,
+.experience-section .button-star.is-starred .star-count {
+    background: rgba(201, 166, 107, 0.14);
+    color: var(--gold-light);
+}
+
+
+/* Edit, Search, dan Cancel: teal outline */
+
+.experience-section .experience-actions a.button,
+.experience-section .experience-search .button,
+.experience-form-modal .button-secondary {
+    background: rgba(95, 168, 168, 0.08);
+    border-color: rgba(95, 168, 168, 0.55);
+    color: var(--teal-light);
+}
+
+
+/* Delete: bentuk sama, aksen merah */
+
+.experience-section .button-danger {
+    background: rgba(235, 130, 130, 0.08);
+    border-color: rgba(235, 130, 130, 0.55);
+    color: #f2a6a6;
+}
+
+
+/* Hover: warna sedikit lebih kuat */
+
+@media (hover: hover) and (pointer: fine) {
+    .experience-section .experience-add-button:hover,
+    .experience-section .button-star:not(.is-starred):hover,
+    .experience-section .button-star.is-starred:hover,
+    .experience-form-modal .button[type="submit"]:hover:not(:disabled) {
+        background: rgba(201, 166, 107, 0.18);
+        border-color: var(--gold-light);
+        color: var(--gold-light);
+    }
+
+    .experience-section .experience-actions a.button:hover,
+    .experience-section .experience-search .button:hover,
+    .experience-form-modal .button-secondary:hover {
+        background: rgba(95, 168, 168, 0.18);
+        border-color: var(--teal-light);
+        color: var(--teal-light);
+    }
+
+    .experience-section .button-danger:hover {
+        background: rgba(235, 130, 130, 0.18);
+        border-color: #f2a6a6;
+        color: #f2a6a6;
+    }
+}

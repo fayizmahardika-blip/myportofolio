@@ -287,7 +287,7 @@
                     {% csrf_token %}
 
                     <button
-                        type="submit"
+                        type="button"
                         class="button button-star${isStarredClass}"
                         title="${starTitle}"
                     >
@@ -505,7 +505,7 @@ function getCookie(name) {
 async function toggleStarExperience(form) {
     const button =
         form.querySelector(
-            'button[type="submit"]'
+            ".button-star"
         );
 
     const label =
@@ -638,18 +638,25 @@ async function addExperience(event) {
             );
 
             gridContainer.addEventListener(
-                "submit",
+                "click",
                 function (event) {
-                    const form =
+                    const button =
                         event.target.closest(
+                            ".button-star"
+                        );
+
+                    if (!button) {
+                        return;
+                    }
+
+                    const form =
+                        button.closest(
                             ".star-form"
                         );
 
                     if (!form) {
                         return;
                     }
-
-                    event.preventDefault();
 
                     toggleStarExperience(
                         form

@@ -48,6 +48,15 @@
 
                     {{ field }}
 
+                    {% if field.name == "ended_at" %}
+                        <p class="form-help">
+                            Tanggal dan waktu selesai.
+                            Kosongkan jika masih berlangsung.
+                            Format: YYYY-MM-DD HH:mm:ss,
+                            contoh 2026-10-05 17:30:00.
+                        </p>
+                    {% endif %}
+
                     {% for error in field.errors %}
                         <p class="form-error">
                             {{ error }}

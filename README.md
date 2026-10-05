@@ -107,3 +107,24 @@ beberapa contoh prompt atau instruksi yang saya gunakan selama pengerjaan:
 - "jelaskan implementasi role Editor step-by-step, jangan langsung semuanya sekaligus."
 - "bagaimana cara membuat Editor hanya bisa edit tetapi tidak bisa create dan delete?"
 - "bantu buat test untuk memastikan authorization Editor benar-benar bekerja di sisi server."
+
+
+### Tugas 5
+
+1. debouncing adalah teknik untuk memberi jeda sebelum suatu fungsi dijalankan setelah user berhenti melakukan input. pada fitur pencarian dengan AJAX, teknik ini berguna supaya aplikasi tidak langsung mengirim request setiap kali user mengetik satu huruf. kalau request dikirim terus menerus untuk setiap karakter, jumlah request ke server bisa menjadi terlalu banyak dan kurang efisien. dengan debouncing, request baru dikirim setelah user berhenti mengetik selama beberapa saat, jadi pencarian tetap terasa responsif tetapi tidak membebani server secara berlebihan.
+
+2. `await` digunakan supaya program menunggu proses asynchronous seperti `fetch()` selesai terlebih dahulu sebelum lanjut ke baris berikutnya. pada implementasi yang saya buat, `await fetch()` digunakan untuk menunggu response dari server, kemudian hasil response tersebut dibaca lagi menggunakan `await response.json()`. kalau `await` tidak digunakan, kode berikutnya bisa berjalan sebelum request selesai dan nilai yang didapat masih berupa Promise, bukan hasil response yang sebenarnya. proses asynchronous tetap bisa dilakukan tanpa `await`, tetapi harus ditangani dengan cara lain seperti menggunakan `.then()`.
+
+3. XSS atau Cross-Site Scripting adalah serangan ketika input dari user dapat dianggap sebagai kode HTML atau JavaScript lalu dijalankan oleh browser. data yang dirender langsung melalui template Django relatif lebih aman karena Django melakukan auto-escaping terhadap data yang ditampilkan. pada saat data diambil melalui AJAX dan kemudian dimasukkan ke halaman menggunakan JavaScript seperti `innerHTML`, proses auto-escaping dari template Django tidak lagi terjadi secara otomatis. karena itu, pada bagian Experience saya menggunakan `escapeHtml()` untuk mengamankan data sebelum dimasukkan ke HTML dan `strip_tags()` di sisi server untuk membersihkan input yang masuk.
+
+### AI disclosure
+
+saya menggunakan ChatGPT sebagai alat bantu selama pengerjaan proyek ini, terutama untuk membantu memahami requirement tugas, menjelaskan konsep yang masih belum saya pahami, dan membantu debugging ketika ada error pada kode.
+
+pada Tugas 5, saya menggunakan AI untuk membantu memahami alur AJAX menggunakan `fetch()`, debouncing pada fitur pencarian, penggunaan CSRF token pada request POST, pembuatan modal dan toast, serta perlindungan XSS menggunakan `escapeHtml()` dan `strip_tags()`.
+
+saya biasanya memberikan potongan kode, error, atau requirement tugas terlebih dahulu lalu meminta penjelasan dan solusi secara bertahap. saya tidak langsung menggunakan semua jawaban AI tanpa pengecekan, karena beberapa bagian tetap perlu disesuaikan dengan struktur project saya sendiri.
+
+saya juga melakukan pengecekan manual dengan menjalankan project secara lokal, mencoba fitur seperti search, add experience, star, edit, delete, dan menjalankan test Django untuk memastikan perubahan yang dibuat tetap berjalan dengan benar.
+
+karena contoh pada tutorial menggunakan bagian Projects, saya menyesuaikan implementasinya ke bagian Experience yang saya gunakan sejak Tugas 3 dan Tugas 4. beberapa penyesuaian yang saya lakukan antara lain pada field form, endpoint JSON, hak akses user, dan tampilan card Experience.
