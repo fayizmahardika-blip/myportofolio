@@ -169,7 +169,7 @@
         );
     }
 
-
+    // escape data sebelum dimasukkan ke innerHTML untuk mencegah XSS
     function escapeHtml(value) {
     return String(value ?? "")
         .replaceAll("&", "&amp;")
@@ -179,6 +179,7 @@
         .replaceAll("'", "&#39;");
     }
 
+    // membangun satu card Experience dari data JSON
     function buildExperienceCardElement(item) {
         const experience = item.fields;
         const experienceId = item.pk;
@@ -352,7 +353,7 @@
         return articleElement;
     }
 
-
+    // mengambil daftar Experience dari endpoint JSON
     async function fetchExperiences(
         searchQuery = ""
     ) {
@@ -461,7 +462,7 @@ const CREATE_EXPERIENCE_ENDPOINT =
 const experienceForm =
     document.getElementById("experience-form");
 
-
+// membaca cookie csrftoken untuk request POST AJAX
 function getCookie(name) {
     let cookieValue = null;
 
@@ -502,6 +503,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// mengubah status Star/Unstar lewat AJAX
 async function toggleStarExperience(form) {
     const button =
         form.querySelector(
@@ -590,7 +592,7 @@ async function toggleStarExperience(form) {
     }
 }
 
-
+// mengirim form Add Experience dengan AJAX tanpa reload halaman
 async function addExperience(event) {
     event.preventDefault();
 
