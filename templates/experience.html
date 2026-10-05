@@ -137,7 +137,7 @@
 
     const searchInput =
         document.getElementById("search-input");
-    
+
     const SEARCH_DEBOUNCE_DELAY = 300;
     let searchDebounceTimer;
 
@@ -626,7 +626,6 @@ async function addExperience(event) {
 
 
         if (response.ok) {
-
             experienceForm.reset();
 
             closeExperienceModal();
@@ -637,38 +636,12 @@ async function addExperience(event) {
                 "success"
             );
 
-            gridContainer.addEventListener(
-                "click",
-                function (event) {
-                    const button =
-                        event.target.closest(
-                            ".button-star"
-                        );
-
-                    if (!button) {
-                        return;
-                    }
-
-                    const form =
-                        button.closest(
-                            ".star-form"
-                        );
-
-                    if (!form) {
-                        return;
-                    }
-
-                    toggleStarExperience(
-                        form
-                    );
-                }
-            );
-
             fetchExperiences(
                 searchInput.value.trim()
             );
 
-        } else {
+        }
+        else {
 
             const errorMessages =
                 result.errors
@@ -751,6 +724,29 @@ searchForm.addEventListener(
         searchExperiences();
     }
 );
+
+
+gridContainer.addEventListener("click", function (event) {
+    const button = event.target.closest(".button-star");
+
+    if (!button) {
+        return;
+    }
+
+    event.preventDefault();
+
+    if (button.disabled) {
+        return;
+    }
+
+    const form = button.closest(".star-form");
+
+    if (!form) {
+        return;
+    }
+
+    toggleStarExperience(form);
+});
 
 
 fetchExperiences(
