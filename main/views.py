@@ -105,6 +105,7 @@ def show_education(request):
         "education_list": educations,
         "institution_query": institution_query,
     }
+    
 
     return render(request, "education.html", context)
 
@@ -388,4 +389,7 @@ def toggle_star_experience(request, experience_id):
         )
 
     return redirect("main:show_experience")
+
+def show_projects(request):
+    return render(request, "project.html")
 

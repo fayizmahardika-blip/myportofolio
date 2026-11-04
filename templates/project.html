@@ -1,0 +1,284 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<main class="max-w-4xl mx-auto px-6 py-10">
+    <h1 class="text-3xl font-bold mb-3">My Projects</h1>
+    <p class="mb-6">Projects powered by Django REST Framework.</p>
+
+    <form id="csrf-form" hidden>
+        {% csrf_token %}
+    </form>
+
+    {% if user.is_superuser %}
+    <section class="border rounded-lg p-5 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Add Project</h2>
+
+        <form id="project-create-form" class="grid gap-3">
+            <input name="title" placeholder="Project title"
+                   required class="border rounded-lg p-3">
+
+            <textarea name="description" placeholder="Description"
+                      required class="border rounded-lg p-3"></textarea>
+
+            <input name="tech_stack" placeholder="Tech stack"
+                   required class="border rounded-lg p-3">
+
+            <input name="project_url" type="url"
+                   placeholder="Project URL (optional)"
+                   class="border rounded-lg p-3">
+
+            <input name="project_image_url" type="url"
+                   placeholder="Image URL (optional)"
+                   class="border rounded-lg p-3">
+
+            <button type="submit"
+                    class="bg-blue-600 text-white rounded-lg p-3">
+                Create Project
+            </button>
+        </form>
+    </section>
+    {% endif %}
+
+    <input
+        id="project-search"
+        type="search"
+        placeholder="Search projects by title..."
+        autocomplete="off"
+        class="w-full border rounded-lg px-4 py-3 mb-4"
+    >
+
+    <p id="project-action-status" role="status" class="mb-3"></p>
+    <p id="project-status">Loading projects...</p>
+    <div id="project-list" class="grid gap-4 mt-6"></div>
+</main>
+
+<script>
+    const apiUrl = "{% url 'api:project-list' %}";
+    const isAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+    const isSuperuser = {% if user.is_superuser %}true{% else %}false{% endif %};
+
+    const csrfToken = document.querySelector(
+        '#csrf-form [name="csrfmiddlewaretoken"]'
+    ).value;
+
+    const projectList = document.getElementById("project-list");
+    const projectStatus = document.getElementById("project-status");
+    const actionStatus = document.getElementById("project-action-status");
+    const searchInput = document.getElementById("project-search");
+    const projectForm = document.getElementById("project-create-form");
+
+    let searchTimer;
+    let latestRequest = 0;
+
+    async function loadProjects(searchQuery = "") {
+        const requestId = ++latestRequest;
+
+        try {
+            const url = new URL(apiUrl, window.location.origin);
+
+            if (searchQuery.trim()) {
+                url.searchParams.set("title", searchQuery.trim());
+            }
+
+            const response = await fetch(url, {
+                headers: {"Accept": "application/json"}
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const projects = await response.json();
+
+            if (requestId !== latestRequest) return;
+
+            projectList.replaceChildren();
+            projectStatus.textContent = projects.length
+                ? `${projects.length} project(s) found`
+                : "No projects found.";
+
+            projects.forEach(project => {
+                const card = document.createElement("article");
+                card.className = "border rounded-lg p-5";
+
+                const title = document.createElement("h2");
+                title.className = "text-xl font-semibold";
+                title.textContent = project.title;
+
+                const description = document.createElement("p");
+                description.className = "mt-2";
+                description.textContent = project.description;
+
+                const techStack = document.createElement("p");
+                techStack.className = "mt-2 text-sm";
+                techStack.textContent = `Tech Stack: ${project.tech_stack}`;
+
+                const stars = document.createElement("p");
+                stars.className = "mt-2 text-sm";
+                stars.textContent = `⭐ ${project.star_count} stars`;
+
+                card.append(title, description, techStack, stars);
+
+                if (isAuthenticated) {
+                    const starButton = document.createElement("button");
+
+                    starButton.type = "button";
+                    starButton.className =
+                        "mt-3 mr-3 border rounded-lg px-4 py-2";
+
+                    starButton.textContent = project.is_starred
+                        ? "★ Unstar"
+                        : "☆ Star";
+
+                    starButton.addEventListener("click", async () => {
+                        starButton.disabled = true;
+
+                        try {
+                            const response = await fetch(
+                                `${apiUrl}${project.id}/star/`,
+                                {
+                                    method: "POST",
+                                    credentials: "same-origin",
+                                    headers: {
+                                        "Accept": "application/json",
+                                        "X-CSRFToken": csrfToken
+                                    }
+                                }
+                            );
+
+                            if (!response.ok) {
+                                throw new Error(`HTTP ${response.status}`);
+                            }
+
+                            actionStatus.textContent = "Star updated!";
+                            await loadProjects(searchInput.value);
+
+                        } catch (error) {
+                            actionStatus.textContent =
+                                `Failed to update Star: ${error.message}`;
+                            starButton.disabled = false;
+                        }
+                    });
+
+                    card.appendChild(starButton);
+                }
+
+                if (isSuperuser) {
+                    const deleteButton = document.createElement("button");
+
+                    deleteButton.type = "button";
+                    deleteButton.className =
+                        "mt-3 border rounded-lg px-4 py-2";
+                    deleteButton.textContent = "Delete";
+
+                    deleteButton.addEventListener("click", async () => {
+                        if (!window.confirm("Delete this project?")) return;
+
+                        deleteButton.disabled = true;
+
+                        try {
+                            const response = await fetch(
+                                `${apiUrl}${project.id}/`,
+                                {
+                                    method: "DELETE",
+                                    credentials: "same-origin",
+                                    headers: {
+                                        "X-CSRFToken": csrfToken
+                                    }
+                                }
+                            );
+
+                            if (!response.ok) {
+                                throw new Error(`HTTP ${response.status}`);
+                            }
+
+                            actionStatus.textContent = "Project deleted!";
+                            await loadProjects(searchInput.value);
+
+                        } catch (error) {
+                            actionStatus.textContent =
+                                `Failed to delete Project: ${error.message}`;
+                            deleteButton.disabled = false;
+                        }
+                    });
+
+                    card.appendChild(deleteButton);
+                }
+
+                projectList.appendChild(card);
+            });
+
+        } catch (error) {
+            if (requestId !== latestRequest) return;
+
+            console.error(error);
+            projectStatus.textContent = "Failed to load projects.";
+        }
+    }
+
+    searchInput.addEventListener("input", () => {
+        clearTimeout(searchTimer);
+
+        searchTimer = setTimeout(() => {
+            loadProjects(searchInput.value);
+        }, 300);
+    });
+
+    if (projectForm) {
+        projectForm.addEventListener("submit", async event => {
+            event.preventDefault();
+
+            const submitButton = projectForm.querySelector(
+                'button[type="submit"]'
+            );
+            const formData = new FormData(projectForm);
+
+            const payload = {
+                title: formData.get("title").trim(),
+                description: formData.get("description").trim(),
+                tech_stack: formData.get("tech_stack").trim(),
+                project_url: formData.get("project_url").trim(),
+                project_image_url: formData.get("project_image_url").trim()
+            };
+
+            submitButton.disabled = true;
+            actionStatus.textContent = "Creating project...";
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "X-CSRFToken": csrfToken
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                projectForm.reset();
+                searchInput.value = "";
+
+                actionStatus.textContent =
+                    "Project created successfully!";
+
+                await loadProjects();
+
+            } catch (error) {
+                actionStatus.textContent =
+                    `Failed to create Project: ${error.message}`;
+
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+    }
+
+    loadProjects();
+</script>
+{% endblock %}
