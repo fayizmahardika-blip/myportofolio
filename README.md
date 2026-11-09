@@ -157,3 +157,45 @@ salah satu contoh kesalahan yang terjadi adalah saat implementasi Star/Unstar AJ
 saya juga melakukan penyesuaian manual pada CSS modal dan tombol karena beberapa styling yang diberikan AI tidak langsung sesuai dengan stylesheet yang sudah ada. setelah setiap perubahan, saya mencoba fitur secara langsung di browser dan menjalankan kembali test Django agar perubahan baru tidak merusak fitur sebelumnya.
 
 dari proses tersebut, saya menyadari bahwa AI lebih efektif digunakan sebagai alat bantu untuk memahami, memberi alternatif solusi, dan membantu debugging, tetapi hasilnya tetap perlu diperiksa dan disesuaikan dengan konteks project yang sebenarnya.
+
+
+
+### tugas 6
+
+**1. jelaskan apa yang dimaksud dengan REST dan mengapa JSON saja belum cukup untuk menyebut sebuah API RESTful! jelaskan perbedaan PUT dan PATCH.**
+
+REST (*representational state transfer*) adalah gaya arsitektur untuk membangun API yang berorientasi pada resource. sebuah API tidak otomatis menjadi RESTful hanya karena menghasilkan JSON. desainnya juga perlu memperhatikan URL yang merepresentasikan resource, penggunaan HTTP method sesuai fungsinya, komunikasi yang stateless, serta status HTTP yang sesuai.
+
+`PUT` digunakan untuk memperbarui resource dengan mengirimkan representasi lengkap, sedangkan `PATCH` digunakan untuk memperbarui sebagian field. contohnya, mengubah seluruh informasi experience menggunakan `PUT`, sementara mengubah judul experience saja menggunakan `PATCH`.
+
+**2. jelaskan peran serializer pada django REST framework dan keuntungannya dibandingkan merakit dictionary secara manual menggunakan JsonResponse.**
+
+serializer berfungsi mengubah objek model django menjadi data yang dapat dikirim melalui API sekaligus memvalidasi data yang diterima.
+
+`ModelSerializer` memudahkan pengelolaan field, validasi, dan penyimpanan data karena terintegrasi dengan model django. dibandingkan membuat dictionary secara manual menggunakan `JsonResponse`, pendekatan ini lebih terstruktur, mudah dipelihara, dan mengurangi duplikasi kode. serializer juga memungkinkan penambahan field hasil perhitungan, seperti `star_count` dan `is_starred`, tanpa menjadikannya kolom baru dalam database.
+
+**3. jelaskan perbedaan autentikasi dan otorisasi pada django REST framework. mengapa permission harus diperiksa di server?**
+
+autentikasi adalah proses memverifikasi identitas pengguna, sedangkan otorisasi menentukan tindakan apa saja yang boleh dilakukan pengguna tersebut.
+
+dalam tugas 6, autentikasi menggunakan session django, sedangkan otorisasi diatur melalui permission class DRF. pengunjung hanya dapat membaca data, pengguna biasa dapat memberikan star, editor dapat memperbarui data, dan superuser dapat mengelola seluruh data.
+
+menyembunyikan tombol pada template bukan mekanisme keamanan yang cukup karena pengguna tetap dapat mengirim HTTP request secara langsung. oleh sebab itu, permission harus diperiksa di backend sebelum tindakan dilakukan.
+
+**4. mengapa SessionAuthentication memerlukan token CSRF, dan mengapa force_authenticate tidak cukup untuk mengujinya?**
+
+`SessionAuthentication` menggunakan cookie session untuk mengenali pengguna. karena browser dapat mengirim cookie secara otomatis, permintaan yang mengubah data berpotensi disalahgunakan melalui serangan *cross-site request forgery* (CSRF).
+
+token CSRF membantu memastikan bahwa permintaan berasal dari interaksi yang diizinkan, bukan dari situs lain yang mencoba memanfaatkan session pengguna. pada frontend, token dikirim melalui header `X-CSRFToken`.
+
+`force_authenticate()` pada pengujian DRF melewati proses autentikasi normal sehingga tidak membuktikan perlindungan CSRF. untuk mengujinya, digunakan `APIClient(enforce_csrf_checks=True)` dengan `.login()`, kemudian dipastikan bahwa POST tanpa token CSRF menghasilkan HTTP 403.
+
+#### penggunaan AI pada tugas 6
+
+dalam pengerjaan tugas 6, saya menggunakan chatgpt (openai) sebagai asisten untuk memahami implementasi django REST framework, menyusun serializer, permission class, API views, integrasi fetch API, dan pengujian otomatis.
+
+strategi penggunaan AI dilakukan secara bertahap dengan memberikan struktur kode yang sudah ada, meminta penyesuaian terhadap implementasi sebelumnya, serta mengevaluasi output pengujian django.
+
+saya menjalankan dan memeriksa kode pada lingkungan pengembangan lokal, termasuk pengujian hak akses, fungsi CRUD, star, CSRF, dan regresi fitur sebelumnya. implementasi juga disesuaikan agar tetap kompatibel dengan experience serta role editor dari tugas sebelumnya.
+
+keterbatasan AI adalah tidak memiliki akses langsung ke seluruh kondisi lingkungan lokal sehingga saran kode perlu diperiksa melalui pengujian dan review manual. hasil akhir tidak dianggap benar hanya berdasarkan respons AI, tetapi diverifikasi melalui django system check, automated tests, dan pengujian frontend.
