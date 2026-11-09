@@ -9,12 +9,15 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 
 from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied     
+
+
 
 def user_is_editor(user):
     return user.groups.filter(name="Editor").exists()
@@ -37,7 +40,7 @@ def show_main(request):
 
     return render(request, "index.html", context)
 
-
+@ensure_csrf_cookie
 def show_experience(request):
     title_query = request.GET.get(
         "title",
